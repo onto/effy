@@ -14,3 +14,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+OTHER_FILES += \
+    Makefile
