@@ -6,6 +6,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QString * start_folder = new QString;
+    *start_folder = "/home/";
+
+    OpenStartFolder(start_folder);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -23,4 +30,13 @@ void MainWindow::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+void MainWindow::OpenStartFolder(QString *folder) {
+
+    QDirModel model;
+    QModelIndex index = model.index(*folder);
+    ui->treeView->setModel(&model);
+    ui->treeView->setRootIndex(index);
+
 }
