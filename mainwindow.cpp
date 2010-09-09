@@ -7,21 +7,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QString * start_folder = new QString;
-    *start_folder = "/home/";
-
-    OpenStartFolder(start_folder);
-
-
+    SetTreeConf();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
+
     delete ui;
+
 }
 
-void MainWindow::changeEvent(QEvent *e)
-{
+void MainWindow::changeEvent(QEvent *e) {
+
     QMainWindow::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
@@ -30,13 +26,19 @@ void MainWindow::changeEvent(QEvent *e)
     default:
         break;
     }
+
 }
 
-void MainWindow::OpenStartFolder(QString *folder) {
+void MainWindow::SetTreeConf() {
 
-    QDirModel model;
-    QModelIndex index = model.index(*folder);
-    ui->treeView->setModel(&model);
+    QDirModel * model = new QDirModel;
+    QModelIndex index = model->index("");
+    model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+    ui->treeView->setModel(model);
     ui->treeView->setRootIndex(index);
+    ui->treeView->setColumnHidden(1,true);
+    ui->treeView->setColumnHidden(2,true);
+    ui->treeView->setColumnHidden(3,true);
 
 }
+

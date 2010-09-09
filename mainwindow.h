@@ -13,7 +13,7 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void OpenStartFolder (QString *folder);
+    void SetTreeConf ();
 
 protected:
     void changeEvent(QEvent *e);
