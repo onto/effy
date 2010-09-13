@@ -13,13 +13,20 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void SetTreeConf ();
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
     Ui::MainWindow *ui;
+    void SetTreeConf();
+    void OpenDirToTab(QString path);
+
+
+private slots:
+
+    void on_treeView_activated(QModelIndex index);
+    void on_tabWidget_tabCloseRequested(int index);
 };
 
 #endif // MAINWINDOW_H

@@ -39,6 +39,22 @@ void MainWindow::SetTreeConf() {
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
+}
+
+void MainWindow::OpenDirToTab(QString path) {
 
 }
 
+void MainWindow::on_tabWidget_tabCloseRequested(int index){
+
+    ui->tabWidget->removeTab(index);
+}
+
+void MainWindow::on_treeView_activated(QModelIndex index)
+{
+    QTableView * tab = new QTableView;
+    QString name = ((QDirModel*)ui->treeView->model())->fileName(index);
+    QString path = ((QDirModel*)ui->treeView->model())->filePath(index);
+    ui->tabWidget->addTab(tab,name);
+    OpenDirToTab(path);
+}

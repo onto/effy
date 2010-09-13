@@ -74,18 +74,38 @@
          <property name="animated">
           <bool>true</bool>
          </property>
+         <property name="allColumnsShowFocus">
+          <bool>false</bool>
+         </property>
+         <property name="headerHidden">
+          <bool>true</bool>
+         </property>
          <attribute name="headerVisible">
           <bool>false</bool>
          </attribute>
         </widget>
         <widget class="QTabWidget" name="tabWidget">
+         <property name="tabPosition">
+          <enum>QTabWidget::North</enum>
+         </property>
          <property name="currentIndex">
           <number>0</number>
          </property>
+         <property name="tabsClosable">
+          <bool>true</bool>
+         </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
-           <string>Tab 1</string>
+           <string>This folder</string>
           </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QTableView" name="tableView"/>
+           </item>
+          </layout>
          </widget>
         </widget>
        </widget>
