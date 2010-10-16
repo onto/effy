@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow() {
 
     delete ui;
-
 }
 
 void MainWindow::changeEvent(QEvent *e) {
@@ -26,7 +25,6 @@ void MainWindow::changeEvent(QEvent *e) {
     default:
         break;
     }
-
 }
 
 void MainWindow::SetTreeConf() {
@@ -41,20 +39,41 @@ void MainWindow::SetTreeConf() {
     ui->treeView->setColumnHidden(3,true);
 }
 
-void MainWindow::OpenDirToTab(QString path) {
+void MainWindow::OpenDir(QString path) {
 
+    QDir dir(path);
+    QFileInfoList content = dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.jpeg" << "*.gif",QDir::Files);
+
+    ViewInTable(content,200,ui->tableWidget->width()/200);
 }
 
-void MainWindow::on_tabWidget_tabCloseRequested(int index){
+void MainWindow::on_treeView_activated(QModelIndex index){
 
-    ui->tabWidget->removeTab(index);
+    ui->label->setText(((QDirModel*)ui->treeView->model())->filePath(index));
+    this->OpenDir(((QDirModel*)ui->treeView->model())->filePath(index));
 }
 
-void MainWindow::on_treeView_activated(QModelIndex index)
-{
-    QTableView * tab = new QTableView;
-    QString name = ((QDirModel*)ui->treeView->model())->fileName(index);
-    QString path = ((QDirModel*)ui->treeView->model())->filePath(index);
-    ui->tabWidget->addTab(tab,name);
-    OpenDirToTab(path);
+void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
+
+    QLabel * imagelabel;
+
+    ui->tableWidget->setRowCount(content.size()/col);
+    ui->tableWidget->setColumnCount(col);
+
+    for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
+        ui->tableWidget->setRowHeight(i,size);
+    }
+    for (int j = 0; j < ui->tableWidget->columnCount(); j++) {
+        ui->tableWidget->setColumnWidth(j,size);
+    }
+
+    int q = 0;
+    foreach(QFileInfo file,content) {
+
+        imagelabel = new QLabel("");
+        imagelabel->setPixmap(QPixmap(file.filePath()).scaled(size,size));
+
+        ui->tableWidget->setCellWidget(q/col,q%col,imagelabel);
+        q++;
+    }
 }
