@@ -22,12 +22,14 @@ private:
 
     Ui::MainWindow *ui;
     void SetTreeConf();
+    void SetTableConf();
     void OpenDir(QString path);
     void ViewInTable(QFileInfoList content,int size,int col);
 
 
 private slots:
 
+    void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
 
 };

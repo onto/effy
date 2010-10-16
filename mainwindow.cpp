@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     SetTreeConf();
     previewsize = 200;
+    SetTableConf();
 }
 
 MainWindow::~MainWindow() {
@@ -56,8 +57,6 @@ void MainWindow::on_treeView_activated(QModelIndex index){
 
 void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
 
-    QLabel * imagelabel;
-
     ui->tableWidget->setRowCount(content.size()/col);
     ui->tableWidget->setColumnCount(col);
 
@@ -68,13 +67,39 @@ void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
         ui->tableWidget->setColumnWidth(j,size);
     }
 
+
+    QLabel * imagelabel;
+    QPixmap * image;
+
     int q = 0;
     foreach(QFileInfo file,content) {
 
+        image = new QPixmap(file.filePath());
+
+        if (image->width() > image->height()) {
+            *image = image->scaledToWidth(size,Qt::FastTransformation);
+        } else {
+            *image = image->scaledToHeight(size,Qt::FastTransformation);
+        }
+
         imagelabel = new QLabel("");
-        imagelabel->setPixmap(QPixmap(file.filePath()).scaled(size,size));
+        imagelabel->setPixmap(*image);
 
         ui->tableWidget->setCellWidget(q/col,q%col,imagelabel);
         q++;
     }
+}
+
+void MainWindow::on_actionQuit_triggered() {
+
+    this->close();
+}
+
+void MainWindow::SetTableConf() {
+
+    ui->tableWidget->setGridStyle();
+}
+
+void MainWindow::on_tableWidget_cellActivated(int row, int column) {
+
 }
