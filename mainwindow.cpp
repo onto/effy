@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     SetTreeConf();
+    previewsize = 200;
 }
 
 MainWindow::~MainWindow() {
@@ -44,7 +45,7 @@ void MainWindow::OpenDir(QString path) {
     QDir dir(path);
     QFileInfoList content = dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.jpeg" << "*.gif",QDir::Files);
 
-    ViewInTable(content,200,ui->tableWidget->width()/200);
+    ViewInTable(content,previewsize,ui->tableWidget->width()/previewsize);
 }
 
 void MainWindow::on_treeView_activated(QModelIndex index){

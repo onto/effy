@@ -18,6 +18,8 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
+    int previewsize;
+
     Ui::MainWindow *ui;
     void SetTreeConf();
     void OpenDir(QString path);
