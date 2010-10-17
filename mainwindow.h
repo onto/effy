@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QtGui>
+#include "viewwindow.h"
 
 namespace Ui {
     class MainWindow;
@@ -21,6 +22,7 @@ private:
     int previewsize;
     QFileInfoList contentlist;
     int columncount;
+    ViewWindow * viewwindow;
 
     Ui::MainWindow *ui;
     void SetTreeConf();
@@ -32,9 +34,12 @@ private:
 
 private slots:
 
+    void on_smallButton_clicked();
+    void on_largeButton_clicked();
     void on_tableWidget_cellActivated(int row, int column);
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
+    void on_resize();
 
 };
 

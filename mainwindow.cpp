@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "viewwindow.h"
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     SetTreeConf();
     previewsize = 200;
     SetTableConf();
+
 }
 
 MainWindow::~MainWindow() {
@@ -114,9 +113,30 @@ void MainWindow::on_tableWidget_cellActivated(int row, int column) {
 
 void MainWindow::OpenPhoto(int id) {
 
-
-    ViewWindow * viewwindow = new ViewWindow(contentlist,id);
-
+    viewwindow = new ViewWindow(contentlist,id);
     viewwindow->show();
 }
 
+void MainWindow::on_resize() {
+
+    ViewInTable(contentlist,previewsize,columncount);
+}
+
+
+void MainWindow::on_largeButton_clicked()
+{
+    if ( previewsize + 25 < ui->tableWidget->width() ) {
+        previewsize += 25;
+        columncount = ui->tableWidget->width() / previewsize;
+    }
+    ViewInTable(contentlist,previewsize,columncount);
+}
+
+void MainWindow::on_smallButton_clicked()
+{
+    if ( previewsize - 25 > 25 ) {
+        previewsize -= 25;
+        columncount = ui->tableWidget->width() / previewsize;
+    }
+    ViewInTable(contentlist,previewsize,columncount);
+}

@@ -27,11 +27,10 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
     this->setWindowTitle(content.at(id).fileName());
     ViewPhoto(content.at(id).filePath());
 
-
 }
 
-ViewWindow::~ViewWindow()
-{
+ViewWindow::~ViewWindow() {
+
     delete ui;
 }
 
@@ -41,6 +40,9 @@ void ViewWindow::ViewPhoto(QString file) {
 
     image = new QPixmap(file);
 
+    image->scaled(800,600);
+
     ui->label->setPixmap(*image);
+
 
 }
