@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "viewwindow.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -60,6 +62,8 @@ void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
     ui->tableWidget->setRowCount(content.size()/col);
     ui->tableWidget->setColumnCount(col);
 
+    columncount = col;
+
     for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
         ui->tableWidget->setRowHeight(i,size);
     }
@@ -67,9 +71,12 @@ void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
         ui->tableWidget->setColumnWidth(j,size);
     }
 
+    contentlist = content;
 
     QLabel * imagelabel;
+    QLabel * namelabel;
     QPixmap * image;
+    QVBoxLayout * layer;
 
     int q = 0;
     foreach(QFileInfo file,content) {
@@ -85,7 +92,14 @@ void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
         imagelabel = new QLabel("");
         imagelabel->setPixmap(*image);
 
+        namelabel = new QLabel(file.fileName());
+
+        layer = new QVBoxLayout();
+        layer->addWidget(imagelabel);
+        layer->addWidget(namelabel);
+
         ui->tableWidget->setCellWidget(q/col,q%col,imagelabel);
+
         q++;
     }
 }
@@ -97,9 +111,19 @@ void MainWindow::on_actionQuit_triggered() {
 
 void MainWindow::SetTableConf() {
 
-    ui->tableWidget->setGridStyle();
+
 }
 
 void MainWindow::on_tableWidget_cellActivated(int row, int column) {
 
+    OpenPhoto(row * columncount + column);
 }
+
+void MainWindow::OpenPhoto(int id) {
+
+
+    ViewWindow * viewwindow = new ViewWindow(contentlist,id);
+
+    viewwindow->show();
+}
+

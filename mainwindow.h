@@ -19,16 +19,20 @@ protected:
 
 private:
     int previewsize;
+    QFileInfoList contentlist;
+    int columncount;
 
     Ui::MainWindow *ui;
     void SetTreeConf();
     void SetTableConf();
+    void OpenPhoto(int id);
     void OpenDir(QString path);
     void ViewInTable(QFileInfoList content,int size,int col);
 
 
 private slots:
 
+    void on_tableWidget_cellActivated(int row, int column);
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
 
