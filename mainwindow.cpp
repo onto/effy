@@ -74,9 +74,8 @@ void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
     contentlist = content;
 
     QLabel * imagelabel;
-    QLabel * namelabel;
     QPixmap * image;
-    QVBoxLayout * layer;
+
 
     int q = 0;
     foreach(QFileInfo file,content) {
@@ -91,12 +90,6 @@ void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
 
         imagelabel = new QLabel("");
         imagelabel->setPixmap(*image);
-
-        namelabel = new QLabel(file.fileName());
-
-        layer = new QVBoxLayout();
-        layer->addWidget(imagelabel);
-        layer->addWidget(namelabel);
 
         ui->tableWidget->setCellWidget(q/col,q%col,imagelabel);
 

@@ -18,21 +18,29 @@
 #include "viewwindow.h"
 #include "ui_viewwindow.h"
 
-ViewWindow::ViewWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::ViewWindow)
-{
-    ui->setupUi(this);
-}
+ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWindow(parent), ui(new Ui::ViewWindow) {
 
-ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent):
-        QMainWindow(parent),
-        ui(new Ui::ViewWindow)
-{
-        ui->setupUi(this);
+    ui->setupUi(this);
+
+    contentlist = content;
+
+    this->setWindowTitle(content.at(id).fileName());
+    ViewPhoto(content.at(id).filePath());
+
+
 }
 
 ViewWindow::~ViewWindow()
 {
     delete ui;
+}
+
+void ViewWindow::ViewPhoto(QString file) {
+
+    QPixmap * image;
+
+    image = new QPixmap(file);
+
+    ui->label->setPixmap(*image);
+
 }

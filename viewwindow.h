@@ -30,12 +30,15 @@ class ViewWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ViewWindow(QWidget *parent = 0);
     explicit ViewWindow(QFileInfoList content, int id, QWidget *parent = 0);
     ~ViewWindow();
 
 private:
     Ui::ViewWindow *ui;
+    QFileInfoList contentlist;
+
+    void ViewPhoto(QString file);
+
 };
 
 #endif // VIEWWINDOW_H
