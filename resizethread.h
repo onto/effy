@@ -15,14 +15,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include <QtGui/QApplication>
-#include "mainwindow.h"
+#ifndef RESIZETHREAD_H
+#define RESIZETHREAD_H
 
-int main(int argc, char *argv[]) {
+#include <QThread>
+#include <QtGui>
 
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-    return a.exec();
+class ResizeThread : public QThread {
+    Q_OBJECT
+private:
+    QFileInfo file;
+    QImage * image;
+    int size, col, q;
 
-}
+public:
+    ResizeThread(QFileInfo file, int size, int col, int q);
+    void run();
+signals:
+    void finished(QImage *,int,int);
+};
+
+#endif // RESIZETHREAD_H

@@ -10,10 +10,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    viewwindow.cpp
+    viewwindow.cpp \
+    resizethread.cpp
 
 HEADERS  += mainwindow.h \
-    viewwindow.h
+    viewwindow.h \
+    resizethread.h
 
 FORMS    += mainwindow.ui \
     viewwindow.ui

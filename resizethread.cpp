@@ -15,14 +15,28 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include <QtGui/QApplication>
-#include "mainwindow.h"
+#include "resizethread.h"
 
-int main(int argc, char *argv[]) {
-
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-    return a.exec();
-
+ResizeThread::ResizeThread(QFileInfo f, int s, int c, int qq) {
+    file = f;
+    size = s;
+    col = c;
+    q = qq;
 }
+
+void ResizeThread::run() {
+
+    image = new QImage(file.filePath());
+
+    if (image->width() > image->height()) {
+        *image = image->scaledToWidth(size,Qt::FastTransformation);
+    } else {
+        *image = image->scaledToHeight(size,Qt::FastTransformation);
+    }
+
+    emit finished(image,col,q);
+
+    exec();
+}
+
+

@@ -1,3 +1,20 @@
+/**************************************************************************
+    Copyright (C) 2010 Lashkov Anton
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -58,6 +75,8 @@ void MainWindow::on_treeView_activated(QModelIndex index){
 
 void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
 
+    ui->tableWidget->clear();
+
     ui->tableWidget->setRowCount(content.size()/col);
     ui->tableWidget->setColumnCount(col);
 
@@ -70,28 +89,15 @@ void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
         ui->tableWidget->setColumnWidth(j,size);
     }
 
-    contentlist = content;
-
-    QLabel * imagelabel;
-    QPixmap * image;
-
+    contentlist = content;   
 
     int q = 0;
     foreach(QFileInfo file,content) {
 
-        image = new QPixmap(file.filePath());
+        ResizeThread * resize = new ResizeThread(file,size,col,q);
+        connect(resize,SIGNAL(finished(QImage*,int,int)),this,SLOT(on_resize_image(QImage *,int, int)));
 
-        if (image->width() > image->height()) {
-            *image = image->scaledToWidth(size,Qt::FastTransformation);
-        } else {
-            *image = image->scaledToHeight(size,Qt::FastTransformation);
-        }
-
-        imagelabel = new QLabel("");
-        imagelabel->setPixmap(*image);
-
-        ui->tableWidget->setCellWidget(q/col,q%col,imagelabel);
-
+        resize->start();
         q++;
     }
 }
@@ -139,4 +145,13 @@ void MainWindow::on_smallButton_clicked()
         columncount = ui->tableWidget->width() / previewsize;
     }
     ViewInTable(contentlist,previewsize,columncount);
+}
+
+
+void MainWindow::on_resize_image(QImage *image, int col, int q) {
+
+    QLabel * imagelabel = new QLabel("");
+    imagelabel->setPixmap(QPixmap::fromImage(*image));
+
+    ui->tableWidget->setCellWidget(q/col,q%col,imagelabel);
 }

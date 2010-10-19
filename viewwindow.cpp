@@ -40,7 +40,7 @@ void ViewWindow::ViewPhoto(QString file) {
 
     image = new QPixmap(file);
 
-    image->scaled(800,600);
+    *image = image->scaledToHeight(600);
 
     ui->label->setPixmap(*image);
 
