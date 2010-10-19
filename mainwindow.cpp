@@ -20,6 +20,8 @@
 
 #ifndef QT_NO_CONCURRENT
 
+int MainWindow::previewsize = 100;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -30,8 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     SetTableConf();
 
     imagescaling = new QFutureWatcher<QImage>(this);
-    connect(imagescaling, SIGNAL(resultReadyAt(int)), SLOT(on_resize(int)));
-
+    connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(on_resize_image(int)));
 }
 
 MainWindow::~MainWindow() {
@@ -56,7 +57,7 @@ void MainWindow::changeEvent(QEvent *e) {
 
 void MainWindow::setPreviewSize(int size) {
 
-    MainWindow::previewsize = size;
+    previewsize = size;
 }
 
 void MainWindow::SetTreeConf() {
@@ -122,7 +123,6 @@ void MainWindow::ViewInTable() {
     }
 
     imagescaling->setFuture(QtConcurrent::mapped(files, &MainWindow::Scaled));
-
 }
 
 void MainWindow::on_actionQuit_triggered() {
@@ -179,6 +179,7 @@ void MainWindow::on_resize_image(int q) {
 void MainWindow::ShowPreview(int q) {
 
     labels[q]->setPixmap(QPixmap::fromImage(imagescaling->resultAt(q)));
+    labels[q]->setFixedSize(previewsize,previewsize);
 }
 
 QImage MainWindow::Scaled(const QString &file) {
@@ -192,7 +193,6 @@ QImage MainWindow::Scaled(const QString &file) {
     }
 
     return *image;
-
 }
 
 #endif // QT_NO_CONCURRENT

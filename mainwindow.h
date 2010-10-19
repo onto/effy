@@ -33,8 +33,8 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    static void setPreviewSize(int size);
-    static int previewsize;
+
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -44,8 +44,9 @@ private:
     ViewWindow * viewwindow;
     QList<QLabel *> labels;
     QFutureWatcher<QImage> * imagescaling;
-
+    static int previewsize;
     Ui::MainWindow *ui;
+
     void SetTreeConf();
     void SetTableConf();
     void OpenPhoto(int id);
@@ -53,7 +54,7 @@ private:
     void ViewInTable();
     void ShowPreview(int id);
     static QImage Scaled(const QString &file);
-
+    void setPreviewSize(int size);
 
 private slots:
     void on_smallButton_clicked();
