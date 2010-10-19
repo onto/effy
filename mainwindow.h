@@ -21,7 +21,8 @@
 #include <QMainWindow>
 #include <QtGui>
 #include "viewwindow.h"
-#include "resizethread.h"
+
+#ifndef QT_NO_CONCURRENT
 
 namespace Ui {
     class MainWindow;
@@ -32,34 +33,39 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+    static void setPreviewSize(int size);
+    static int previewsize;
 protected:
     void changeEvent(QEvent *e);
 
 private:
-    int previewsize;
     QFileInfoList contentlist;
     int columncount;
     ViewWindow * viewwindow;
+    QList<QLabel *> labels;
+    QFutureWatcher<QImage> * imagescaling;
 
     Ui::MainWindow *ui;
     void SetTreeConf();
     void SetTableConf();
     void OpenPhoto(int id);
     void OpenDir(QString path);
-    void ViewInTable(QFileInfoList content,int size,int col);
+    void ViewInTable();
+    void ShowPreview(int id);
+    static QImage Scaled(const QString &file);
 
 
 private slots:
-
     void on_smallButton_clicked();
     void on_largeButton_clicked();
     void on_tableWidget_cellActivated(int row, int column);
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
     void on_resize();
-    void on_resize_image(QImage * image, int col, int q);
+    void on_resize_image(int q);
 
 };
+
+#endif // QT_NO_CONCURRENT
 
 #endif // MAINWINDOW_H

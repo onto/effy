@@ -18,6 +18,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#ifndef QT_NO_CONCURRENT
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -25,12 +27,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     SetTreeConf();
-    previewsize = 200;
     SetTableConf();
+
+    imagescaling = new QFutureWatcher<QImage>(this);
+    connect(imagescaling, SIGNAL(resultReadyAt(int)), SLOT(on_resize(int)));
 
 }
 
 MainWindow::~MainWindow() {
+
+    imagescaling->cancel();
+    imagescaling->waitForFinished();
 
     delete ui;
 }
@@ -47,6 +54,11 @@ void MainWindow::changeEvent(QEvent *e) {
     }
 }
 
+void MainWindow::setPreviewSize(int size) {
+
+    MainWindow::previewsize = size;
+}
+
 void MainWindow::SetTreeConf() {
 
     QDirModel * model = new QDirModel;
@@ -61,10 +73,17 @@ void MainWindow::SetTreeConf() {
 
 void MainWindow::OpenDir(QString path) {
 
-    QDir dir(path);
-    QFileInfoList content = dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.jpeg" << "*.gif",QDir::Files);
+    if (imagescaling->isRunning()) {
+        imagescaling->cancel();
+        imagescaling->waitForFinished();
+    }
 
-    ViewInTable(content,previewsize,ui->tableWidget->width()/previewsize);
+    QDir dir(path);
+    contentlist = dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.jpeg" << "*.gif",QDir::Files);
+
+    columncount = ui->tableWidget->width()/previewsize;
+
+    ViewInTable();
 }
 
 void MainWindow::on_treeView_activated(QModelIndex index){
@@ -73,33 +92,37 @@ void MainWindow::on_treeView_activated(QModelIndex index){
     this->OpenDir(((QDirModel*)ui->treeView->model())->filePath(index));
 }
 
-void MainWindow::ViewInTable(QFileInfoList content,int size,int col) {
+void MainWindow::ViewInTable() {
 
-    ui->tableWidget->clear();
+    qDeleteAll(labels);
+    labels.clear();
 
-    ui->tableWidget->setRowCount(content.size()/col);
-    ui->tableWidget->setColumnCount(col);
-
-    columncount = col;
+    ui->tableWidget->setRowCount(contentlist.size()/columncount);
+    ui->tableWidget->setColumnCount(columncount);
 
     for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
-        ui->tableWidget->setRowHeight(i,size);
+        ui->tableWidget->setRowHeight(i,previewsize);
     }
     for (int j = 0; j < ui->tableWidget->columnCount(); j++) {
-        ui->tableWidget->setColumnWidth(j,size);
+        ui->tableWidget->setColumnWidth(j,previewsize);
     }
 
-    contentlist = content;   
+    QStringList files;
 
     int q = 0;
-    foreach(QFileInfo file,content) {
+    foreach (QFileInfo file,contentlist) {
 
-        ResizeThread * resize = new ResizeThread(file,size,col,q);
-        connect(resize,SIGNAL(finished(QImage*,int,int)),this,SLOT(on_resize_image(QImage *,int, int)));
+        files.append(file.filePath());
 
-        resize->start();
+        QLabel * imagelabel = new QLabel;
+        imagelabel->setFixedSize(previewsize,previewsize);
+        ui->tableWidget->setCellWidget(q/columncount,q%columncount,imagelabel);
+        labels.append(imagelabel);
         q++;
     }
+
+    imagescaling->setFuture(QtConcurrent::mapped(files, &MainWindow::Scaled));
+
 }
 
 void MainWindow::on_actionQuit_triggered() {
@@ -125,7 +148,7 @@ void MainWindow::OpenPhoto(int id) {
 
 void MainWindow::on_resize() {
 
-    ViewInTable(contentlist,previewsize,columncount);
+    ViewInTable();
 }
 
 
@@ -135,7 +158,7 @@ void MainWindow::on_largeButton_clicked()
         previewsize += 25;
         columncount = ui->tableWidget->width() / previewsize;
     }
-    ViewInTable(contentlist,previewsize,columncount);
+    ViewInTable();
 }
 
 void MainWindow::on_smallButton_clicked()
@@ -144,14 +167,32 @@ void MainWindow::on_smallButton_clicked()
         previewsize -= 25;
         columncount = ui->tableWidget->width() / previewsize;
     }
-    ViewInTable(contentlist,previewsize,columncount);
+    ViewInTable();
 }
 
 
-void MainWindow::on_resize_image(QImage *image, int col, int q) {
+void MainWindow::on_resize_image(int q) {
 
-    QLabel * imagelabel = new QLabel("");
-    imagelabel->setPixmap(QPixmap::fromImage(*image));
-
-    ui->tableWidget->setCellWidget(q/col,q%col,imagelabel);
+    ShowPreview(q);
 }
+
+void MainWindow::ShowPreview(int q) {
+
+    labels[q]->setPixmap(QPixmap::fromImage(imagescaling->resultAt(q)));
+}
+
+QImage MainWindow::Scaled(const QString &file) {
+
+    QImage * image = new QImage(file);
+
+    if (image->width() > image->height()) {
+        *image = image->scaledToWidth(previewsize,Qt::FastTransformation);
+    } else {
+        *image = image->scaledToHeight(previewsize,Qt::FastTransformation);
+    }
+
+    return *image;
+
+}
+
+#endif // QT_NO_CONCURRENT

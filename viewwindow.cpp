@@ -44,5 +44,4 @@ void ViewWindow::ViewPhoto(QString file) {
 
     ui->label->setPixmap(*image);
 
-
 }
