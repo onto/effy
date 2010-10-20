@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     SetTableConf();
 
     imagescaling = new QFutureWatcher<QImage>(this);
-    connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(on_resize_image(int)));
+    connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(resized_image(int)));
 }
 
 MainWindow::~MainWindow() {
@@ -50,14 +50,12 @@ void MainWindow::changeEvent(QEvent *e) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
         break;
+    case QEvent::Resize :
+        OnTableResize();
+        break;
     default:
         break;
     }
-}
-
-void MainWindow::setPreviewSize(int size) {
-
-    previewsize = size;
 }
 
 void MainWindow::SetTreeConf() {
@@ -82,7 +80,7 @@ void MainWindow::OpenDir(QString path) {
     QDir dir(path);
     contentlist = dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.jpeg" << "*.gif",QDir::Files);
 
-    columncount = ui->tableWidget->width()/previewsize;
+
 
     ViewInTable();
 }
@@ -98,7 +96,15 @@ void MainWindow::ViewInTable() {
     qDeleteAll(labels);
     labels.clear();
 
-    ui->tableWidget->setRowCount(contentlist.size()/columncount);
+    columncount = ui->tableWidget->width()/previewsize;
+
+    if (contentlist.size() % columncount == 0) {
+        rowcount = contentlist.size() / columncount;
+    } else {
+        rowcount = contentlist.size() / columncount + 1;
+    }
+
+    ui->tableWidget->setRowCount(rowcount);
     ui->tableWidget->setColumnCount(columncount);
 
     for (int i = 0; i < ui->tableWidget->rowCount(); i++) {
@@ -117,7 +123,7 @@ void MainWindow::ViewInTable() {
 
         QLabel * imagelabel = new QLabel;
         imagelabel->setFixedSize(previewsize,previewsize);
-        ui->tableWidget->setCellWidget(q/columncount,q%columncount,imagelabel);
+        ui->tableWidget->setCellWidget(qRound(q/columncount),q%columncount,imagelabel);
         labels.append(imagelabel);
         q++;
     }
@@ -146,7 +152,7 @@ void MainWindow::OpenPhoto(int id) {
     viewwindow->show();
 }
 
-void MainWindow::on_resize() {
+void MainWindow::OnTableResize() {
 
     ViewInTable();
 }
@@ -155,8 +161,7 @@ void MainWindow::on_resize() {
 void MainWindow::on_largeButton_clicked()
 {
     if ( previewsize + 25 < ui->tableWidget->width() ) {
-        previewsize += 25;
-        columncount = ui->tableWidget->width() / previewsize;
+        previewsize += 25;        
     }
     ViewInTable();
 }
@@ -165,13 +170,12 @@ void MainWindow::on_smallButton_clicked()
 {
     if ( previewsize - 25 > 25 ) {
         previewsize -= 25;
-        columncount = ui->tableWidget->width() / previewsize;
     }
     ViewInTable();
 }
 
 
-void MainWindow::on_resize_image(int q) {
+void MainWindow::resized_image(int q) {
 
     ShowPreview(q);
 }
@@ -194,5 +198,7 @@ QImage MainWindow::Scaled(const QString &file) {
 
     return *image;
 }
+
+
 
 #endif // QT_NO_CONCURRENT

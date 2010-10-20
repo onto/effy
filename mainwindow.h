@@ -41,6 +41,7 @@ protected:
 private:
     QFileInfoList contentlist;
     int columncount;
+    int rowcount;
     ViewWindow * viewwindow;
     QList<QLabel *> labels;
     QFutureWatcher<QImage> * imagescaling;
@@ -54,7 +55,7 @@ private:
     void ViewInTable();
     void ShowPreview(int id);
     static QImage Scaled(const QString &file);
-    void setPreviewSize(int size);
+    void OnTableResize();
 
 private slots:
     void on_smallButton_clicked();
@@ -62,8 +63,8 @@ private slots:
     void on_tableWidget_cellActivated(int row, int column);
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
-    void on_resize();
-    void on_resize_image(int q);
+
+    void resized_image(int q);
 
 };
 
