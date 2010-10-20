@@ -15,31 +15,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "viewwindow.h"
-#include "ui_viewwindow.h"
+#include "settingswindow.h"
+#include "ui_settingswindow.h"
 
-ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWindow(parent), ui(new Ui::ViewWindow) {
-
+SettingsWindow::SettingsWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::SettingsWindow)
+{
     ui->setupUi(this);
-
-    contentlist = content;
-
-    this->setWindowTitle(content.at(id).fileName());
-    ViewPhoto(content.at(id).filePath());
 }
 
-ViewWindow::~ViewWindow() {
-
+SettingsWindow::~SettingsWindow()
+{
     delete ui;
-}
-
-void ViewWindow::ViewPhoto(QString file) {
-
-    QPixmap * image;
-
-    image = new QPixmap(file);
-
-    *image = image->scaledToHeight(600,Qt::SmoothTransformation);
-
-    ui->label->setPixmap(*image);
 }

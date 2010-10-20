@@ -21,6 +21,7 @@
 #include <QMainWindow>
 #include <QtGui>
 #include "viewwindow.h"
+#include <qprolabel.h>
 
 #ifndef QT_NO_CONCURRENT
 
@@ -34,7 +35,6 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-
 protected:
     void changeEvent(QEvent *e);
 
@@ -43,29 +43,27 @@ private:
     int columncount;
     int rowcount;
     ViewWindow * viewwindow;
-    QList<QLabel *> labels;
+    QList<QProLabel *> labels;
     QFutureWatcher<QImage> * imagescaling;
     static int previewsize;
     Ui::MainWindow *ui;
 
     void SetTreeConf();
-    void SetTableConf();
     void OpenPhoto(int id);
     void OpenDir(QString path);
-    void ViewInTable();
+    void View();
     void ShowPreview(int id);
     static QImage Scaled(const QString &file);
     void OnTableResize();
+    void Update();
 
 private slots:
     void on_smallButton_clicked();
     void on_largeButton_clicked();
-    void on_tableWidget_cellActivated(int row, int column);
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
-
     void resized_image(int q);
-
+    void label_changed(int id);
 };
 
 #endif // QT_NO_CONCURRENT

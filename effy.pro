@@ -10,13 +10,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    viewwindow.cpp
+    viewwindow.cpp \
+    settingswindow.cpp \
+    qprolabel.cpp
 
 HEADERS  += mainwindow.h \
-    viewwindow.h
+    viewwindow.h \
+    settingswindow.h \
+    qprolabel.h
 
 FORMS    += mainwindow.ui \
-    viewwindow.ui
+    viewwindow.ui \
+    settingswindow.ui
 
 OTHER_FILES += \
     Makefile

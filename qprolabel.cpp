@@ -15,31 +15,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "viewwindow.h"
-#include "ui_viewwindow.h"
+#include "qprolabel.h"
 
-ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWindow(parent), ui(new Ui::ViewWindow) {
+QProLabel::QProLabel(QWidget *parent, int i) :
+    QLabel(parent) {
 
-    ui->setupUi(this);
-
-    contentlist = content;
-
-    this->setWindowTitle(content.at(id).fileName());
-    ViewPhoto(content.at(id).filePath());
+    id = i;
 }
 
-ViewWindow::~ViewWindow() {
+void QProLabel::mouseReleaseEvent(QMouseEvent *ev) {
 
-    delete ui;
-}
+    switch (ev->button()) {
 
-void ViewWindow::ViewPhoto(QString file) {
-
-    QPixmap * image;
-
-    image = new QPixmap(file);
-
-    *image = image->scaledToHeight(600,Qt::SmoothTransformation);
-
-    ui->label->setPixmap(*image);
+    case Qt::LeftButton : emit clicked(id); break;
+    default: break;
+    }
 }
