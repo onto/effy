@@ -49,12 +49,12 @@ private:
     Ui::MainWindow *ui;
 
     void SetTreeConf();
+    void SetToolBarConf();
     void OpenPhoto(int id);
     void OpenDir(QString path);
     void View();
     void ShowPreview(int id);
     static QImage Scaled(const QString &file);
-    void OnTableResize();
     void Update();
 
 private slots:
@@ -63,7 +63,15 @@ private slots:
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
     void resized_image(int q);
-    void label_changed(int id);
+    void label_dbl_clicked(int id);
+    void label_clicked(int id);
+    void resize();
+
+signals:
+    void widget_resize();
+
+protected:
+    void resizeEvent ( QResizeEvent * event );
 };
 
 #endif // QT_NO_CONCURRENT

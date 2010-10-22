@@ -29,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     SetTreeConf();
+    SetToolBarConf();
+
+    connect(ui->splitter,SIGNAL(splitterMoved(int,int)),this,SLOT(resize()));
+    connect(this,SIGNAL(widget_resize()),this,SLOT(resize()));
 
     imagescaling = new QFutureWatcher<QImage>(this);
     connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(resized_image(int)));
@@ -49,11 +53,19 @@ void MainWindow::changeEvent(QEvent *e) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
         break;
-    case QEvent::Resize :
-        OnTableResize();
-        break;
     default:
         break;
+    }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *e) {
+
+    QMainWindow::resizeEvent(e);
+    switch (e->type()) {
+    case QResizeEvent::Resize:
+        emit widget_resize();
+        break;
+    default: break;
     }
 }
 
@@ -67,6 +79,12 @@ void MainWindow::SetTreeConf() {
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
+}
+
+
+void MainWindow::SetToolBarConf() {
+
+
 }
 
 void MainWindow::OpenDir(QString path) {
@@ -96,14 +114,15 @@ void MainWindow::View() {
     Update();
 
     QStringList files;
-
     int q = 0;
+
     foreach (QFileInfo file,contentlist) {
 
         files.append(file.filePath());
 
         QProLabel * imagelabel = new QProLabel(0,q);
-        connect(imagelabel,SIGNAL(clicked(int)),this,SLOT(label_changed(int)));
+        connect(imagelabel,SIGNAL(dbl_clicked(int)),this,SLOT(label_dbl_clicked(int)));
+        connect(imagelabel,SIGNAL(clicked(int)),this,SLOT(label_clicked(int)));
 
         ui->gridLayout->addWidget(imagelabel,qRound(q/columncount),q%columncount);
         labels.append(imagelabel);
@@ -120,8 +139,8 @@ void MainWindow::on_actionQuit_triggered() {
 
 void MainWindow::Update() {
 
-    if (previewsize > ui->scrollArea->size().width()) {
-        previewsize = ui->scrollArea->size().width();
+    if (previewsize > (ui->scrollArea->size().width() - 8)) {
+        previewsize = ui->scrollArea->size().width() - 8;
     }
 
     columncount = ui->scrollArea->size().width()/previewsize;
@@ -133,9 +152,18 @@ void MainWindow::Update() {
     }
 }
 
-void MainWindow::label_changed(int id) {
+void MainWindow::label_dbl_clicked(int id) {
 
     OpenPhoto(id);
+}
+
+
+void MainWindow::label_clicked(int id) {
+
+    for (int i = 0; i < labels.size(); i++) {
+        labels[i]->setUnHighlight();
+    }
+    labels[id]->setHighlight();
 }
 
 void MainWindow::OpenPhoto(int id) {
@@ -144,7 +172,7 @@ void MainWindow::OpenPhoto(int id) {
     viewwindow->show();
 }
 
-void MainWindow::OnTableResize() {
+void MainWindow::resize() {
 
     Update();
 
@@ -152,7 +180,6 @@ void MainWindow::OnTableResize() {
         ui->gridLayout->addWidget(labels[i],qRound(i/columncount),i%columncount);
     }
 }
-
 
 void MainWindow::on_largeButton_clicked()
 {
@@ -194,7 +221,5 @@ QImage MainWindow::Scaled(const QString &file) {
 
     return *image;
 }
-
-
 
 #endif // QT_NO_CONCURRENT
