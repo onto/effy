@@ -19,12 +19,8 @@
 
 QProLabel::QProLabel(QWidget *parent, int i) :
     QLabel(parent) {
-
     id = i;
     click = 0;
-    ishighlight = false;
-
-    connect(this,SIGNAL(clicked(int)),SLOT(highlight()));
 }
 
 void QProLabel::mouseReleaseEvent(QMouseEvent *ev) {
@@ -39,30 +35,13 @@ void QProLabel::mouseReleaseEvent(QMouseEvent *ev) {
             emit clicked(id);
             break;
         }
-
     default: break;
     }
 }
 
-bool QProLabel::isHighlight() {
-
-    return click;
-}
-
-void QProLabel::highlight() {
-
-    if (ishighlight) {
-        ishighlight = false;
-        setUnHighlight();
-    } else {
-        ishighlight = true;
-        setHighlight();
-    }
-}
-
 void QProLabel::setUnHighlight() {
-    setStyleSheet("");
     click = 0;
+    setStyleSheet("");
 }
 
 void QProLabel::setHighlight() {

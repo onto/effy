@@ -23,9 +23,41 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
+
+    settings = new QSettings("effy","effy");
+
+    ui->rootfolderEdit->setText(settings->value("root_folder").toString());
+    ui->savefolderBox->setChecked(settings->value("save_last_folder").toBool());
+
 }
 
 SettingsWindow::~SettingsWindow()
 {
     delete ui;
+}
+
+void SettingsWindow::on_buttonBox_accepted(){
+
+    close();
+}
+
+void SettingsWindow::on_buttonBox_rejected() {
+
+
+}
+
+void SettingsWindow::on_toolButton_clicked() {
+
+    ui->rootfolderEdit->setText(QFileDialog::getExistingDirectory(0,"Change Folder",""));
+    settings->setValue("root_folder",ui->rootfolderEdit->text());
+}
+
+void SettingsWindow::on_savefolderBox_stateChanged(int) {
+
+    settings->setValue("save_last_folder",ui->savefolderBox->isChecked());
+}
+
+void SettingsWindow::on_rootfolderEdit_editingFinished() {
+
+    settings->setValue("root_folder",ui->rootfolderEdit->text());
 }

@@ -18,9 +18,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include <QtGui>
 #include "viewwindow.h"
+#include "settingswindow.h"
 #include <qprolabel.h>
 
 #ifndef QT_NO_CONCURRENT
@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    QSettings * settings;
 
 protected:
     void changeEvent(QEvent *e);
@@ -43,13 +44,19 @@ private:
     int columncount;
     int rowcount;
     ViewWindow * viewwindow;
+    SettingsWindow * settingswindow;
     QList<QProLabel *> labels;
     QFutureWatcher<QImage> * imagescaling;
     static int previewsize;
     Ui::MainWindow *ui;
+    QList<QPushButton *> toolbarbuttons;
+    QLabel * pathlabel;
+    QDirModel * model;
 
+    void SetWidgetsConf();
     void SetTreeConf();
     void SetToolBarConf();
+    void SaveSettings();
     void OpenPhoto(int id);
     void OpenDir(QString path);
     void View();
@@ -58,8 +65,10 @@ private:
     void Update();
 
 private slots:
-    void on_smallButton_clicked();
-    void on_largeButton_clicked();
+    void gohome_clicked();
+    void zoomin_clicked();
+    void zoomout_clicked();
+    void settings_clicked();
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
     void resized_image(int q);
@@ -71,7 +80,7 @@ signals:
     void widget_resize();
 
 protected:
-    void resizeEvent ( QResizeEvent * event );
+    void resizeEvent (QResizeEvent * event );
 };
 
 #endif // QT_NO_CONCURRENT

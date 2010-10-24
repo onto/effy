@@ -18,7 +18,8 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
-#include <QMainWindow>
+#include <QtGui>
+
 
 namespace Ui {
     class SettingsWindow;
@@ -34,6 +35,14 @@ public:
 
 private:
     Ui::SettingsWindow *ui;
+    QSettings * settings;
+
+private slots:
+    void on_rootfolderEdit_editingFinished();
+    void on_savefolderBox_stateChanged(int );
+    void on_toolButton_clicked();
+    void on_buttonBox_rejected();
+    void on_buttonBox_accepted();
 };
 
 #endif // SETTINGSWINDOW_H

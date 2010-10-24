@@ -25,21 +25,16 @@ class QProLabel : public QLabel
     Q_OBJECT
 public:
     explicit QProLabel(QWidget *parent, int id);
-    bool isHighlight();
     void setUnHighlight();
     void setHighlight();
 
 private:
     int id;
     int click;
-    bool ishighlight;
 
 signals:
     void dbl_clicked(int);
     void clicked(int);
-
-public slots:
-    void highlight();
 
 protected:
     void mouseReleaseEvent(QMouseEvent *ev);

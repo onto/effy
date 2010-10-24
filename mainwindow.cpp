@@ -20,7 +20,7 @@
 
 #ifndef QT_NO_CONCURRENT
 
-int MainWindow::previewsize = 100;
+int MainWindow::previewsize = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    settings = new QSettings("effy","effy");
+
+    SetWidgetsConf();
     SetTreeConf();
     SetToolBarConf();
 
@@ -39,9 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
-
-    imagescaling->cancel();
-    imagescaling->waitForFinished();
 
     delete ui;
 }
@@ -71,21 +71,61 @@ void MainWindow::resizeEvent(QResizeEvent *e) {
 
 void MainWindow::SetTreeConf() {
 
-    QDirModel * model = new QDirModel;
-    QModelIndex index = model->index("");
+    model = new QDirModel;
     model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
     ui->treeView->setModel(model);
-    ui->treeView->setRootIndex(index);
+    ui->treeView->setRootIndex(model->index(settings->value("root_folder").toString()));
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
+
+    if (settings->value("save_last_folder").toBool()) {
+        ui->treeView->scrollTo(model->index(settings->value("last_folder").toString()));
+    }
 }
 
 
 void MainWindow::SetToolBarConf() {
 
+    QPushButton * gohomebutton = new QPushButton(QIcon::fromTheme("go-home"),"");
+    connect(gohomebutton,SIGNAL(clicked()),this,SLOT(gohome_clicked()));
+    ui->toolBar->addWidget(gohomebutton);
 
+    ui->toolBar->addSeparator();
+
+    QPushButton * settingsbutton = new QPushButton(QIcon::fromTheme("emblem-system"),"");
+    connect(settingsbutton,SIGNAL(clicked()),this,SLOT(settings_clicked()));
+    ui->toolBar->addWidget(settingsbutton);
+
+    ui->toolBar->addSeparator();
+
+    QPushButton * zoominbutton = new QPushButton(QIcon::fromTheme("zoom-in"),"");
+    connect(zoominbutton,SIGNAL(clicked()),this,SLOT(zoomin_clicked()));
+    ui->toolBar->addWidget(zoominbutton);
+
+    QPushButton * zoomoutbutton = new QPushButton(QIcon::fromTheme("zoom-out"),"");
+    connect(zoomoutbutton,SIGNAL(clicked()),this,SLOT(zoomout_clicked()));
+    ui->toolBar->addWidget(zoomoutbutton);
 }
+
+void MainWindow::SetWidgetsConf() {
+
+    pathlabel = new QLabel("");
+    ui->statusBar->addWidget(pathlabel);
+
+    this->restoreGeometry(settings->value("window_size").toByteArray());
+    ui->splitter->restoreState(settings->value("splitter_state").toByteArray());
+
+    if (settings->contains("preview_size")) {
+        previewsize = settings->value("preview_size").toInt();
+    } else {
+        previewsize = 100;
+    }
+}
+
+void MainWindow::SaveSettings() {
+
+};
 
 void MainWindow::OpenDir(QString path) {
 
@@ -97,8 +137,10 @@ void MainWindow::OpenDir(QString path) {
 
 void MainWindow::on_treeView_activated(QModelIndex index){
 
-    ui->label->setText(((QDirModel*)ui->treeView->model())->filePath(index));
+
+    pathlabel->setText(((QDirModel*)ui->treeView->model())->filePath(index));
     this->OpenDir(((QDirModel*)ui->treeView->model())->filePath(index));
+    settings->setValue("last_folder",pathlabel->text());
 }
 
 void MainWindow::View() {
@@ -139,24 +181,25 @@ void MainWindow::on_actionQuit_triggered() {
 
 void MainWindow::Update() {
 
-    if (previewsize > (ui->scrollArea->size().width() - 8)) {
-        previewsize = ui->scrollArea->size().width() - 8;
-    }
-
     columncount = ui->scrollArea->size().width()/previewsize;
+
+    if (columncount == 0) {
+        columncount = 1;
+    }
 
     if (contentlist.size() % columncount == 0) {
         rowcount = contentlist.size() / columncount;
     } else {
         rowcount = contentlist.size() / columncount + 1;
     }
+
+    settings->setValue("preview_size",previewsize);
 }
 
 void MainWindow::label_dbl_clicked(int id) {
 
     OpenPhoto(id);
 }
-
 
 void MainWindow::label_clicked(int id) {
 
@@ -179,9 +222,12 @@ void MainWindow::resize() {
     for (int i = 0; i < labels.size(); i++) {
         ui->gridLayout->addWidget(labels[i],qRound(i/columncount),i%columncount);
     }
+
+    settings->setValue("window_size",this->saveGeometry());
+    settings->setValue("splitter_state",ui->splitter->saveState());
 }
 
-void MainWindow::on_largeButton_clicked()
+void MainWindow::zoomin_clicked()
 {
     if ( previewsize + 25 < ui->scrollArea->size().width()) {
         previewsize += 25;        
@@ -189,7 +235,7 @@ void MainWindow::on_largeButton_clicked()
     View();
 }
 
-void MainWindow::on_smallButton_clicked()
+void MainWindow::zoomout_clicked()
 {
     if ( previewsize - 25 > 25 ) {
         previewsize -= 25;
@@ -197,6 +243,16 @@ void MainWindow::on_smallButton_clicked()
     View();
 }
 
+void MainWindow::settings_clicked() {
+
+    settingswindow = new SettingsWindow();
+    settingswindow->show();
+}
+
+void MainWindow::gohome_clicked() {
+
+    ui->treeView->scrollTo(model->index(settings->value("root_folder").toString()));
+}
 
 void MainWindow::resized_image(int q) {
 
