@@ -68,6 +68,9 @@
             </property>
             <item>
              <layout class="QGridLayout" name="gridLayout">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetMinimumSize</enum>
+              </property>
               <property name="spacing">
                <number>4</number>
               </property>

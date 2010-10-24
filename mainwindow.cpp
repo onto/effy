@@ -166,6 +166,8 @@ void MainWindow::View() {
         connect(imagelabel,SIGNAL(dbl_clicked(int)),this,SLOT(label_dbl_clicked(int)));
         connect(imagelabel,SIGNAL(clicked(int)),this,SLOT(label_clicked(int)));
 
+        imagelabel->setFixedSize(previewsize,previewsize);
+
         ui->gridLayout->addWidget(imagelabel,qRound(q/columncount),q%columncount);
         labels.append(imagelabel);
         q++;
