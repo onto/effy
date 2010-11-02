@@ -28,12 +28,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //connect with settings
     settings = new QSettings("effy","effy");
 
+    //configure tree, toolbar, widgets
     SetWidgetsConf();
     SetTreeConf();
     SetToolBarConf();
 
+    //connect with resize event
     connect(ui->splitter,SIGNAL(splitterMoved(int,int)),this,SLOT(resize()));
     connect(this,SIGNAL(widget_resize()),this,SLOT(resize()));
 
@@ -43,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
 
+    qDeleteAll(toolbarbuttons);
+    delete model;
     delete ui;
 }
 
@@ -71,6 +76,7 @@ void MainWindow::resizeEvent(QResizeEvent *e) {
 
 void MainWindow::SetTreeConf() {
 
+    //set tree model and
     model = new QDirModel;
     model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
     ui->treeView->setModel(model);
@@ -87,25 +93,33 @@ void MainWindow::SetTreeConf() {
 
 void MainWindow::SetToolBarConf() {
 
+    //go home button
     QPushButton * gohomebutton = new QPushButton(QIcon::fromTheme("go-home"),"");
     connect(gohomebutton,SIGNAL(clicked()),this,SLOT(gohome_clicked()));
     ui->toolBar->addWidget(gohomebutton);
+    toolbarbuttons.append(gohomebutton);
 
     ui->toolBar->addSeparator();
 
+    //settings button
     QPushButton * settingsbutton = new QPushButton(QIcon::fromTheme("emblem-system"),"");
     connect(settingsbutton,SIGNAL(clicked()),this,SLOT(settings_clicked()));
     ui->toolBar->addWidget(settingsbutton);
+    toolbarbuttons.append(settingsbutton);
 
     ui->toolBar->addSeparator();
 
+    //zoom in button
     QPushButton * zoominbutton = new QPushButton(QIcon::fromTheme("zoom-in"),"");
     connect(zoominbutton,SIGNAL(clicked()),this,SLOT(zoomin_clicked()));
     ui->toolBar->addWidget(zoominbutton);
+    toolbarbuttons.append(zoominbutton);
 
+    //zoom out button
     QPushButton * zoomoutbutton = new QPushButton(QIcon::fromTheme("zoom-out"),"");
     connect(zoomoutbutton,SIGNAL(clicked()),this,SLOT(zoomout_clicked()));
     ui->toolBar->addWidget(zoomoutbutton);
+    toolbarbuttons.append(zoomoutbutton);
 }
 
 void MainWindow::SetWidgetsConf() {
@@ -116,11 +130,8 @@ void MainWindow::SetWidgetsConf() {
     this->restoreGeometry(settings->value("window_size").toByteArray());
     ui->splitter->restoreState(settings->value("splitter_state").toByteArray());
 
-    if (settings->contains("preview_size")) {
-        previewsize = settings->value("preview_size").toInt();
-    } else {
-        previewsize = 100;
-    }
+    previewsize = settings->value("preview_size").toInt();
+
 }
 
 void MainWindow::SaveSettings() {
@@ -129,6 +140,7 @@ void MainWindow::SaveSettings() {
 
 void MainWindow::OpenDir(QString path) {
 
+    //open dir, save name of files in dir
     QDir dir(path);
     contentlist = dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.jpeg" << "*.gif",QDir::Files);
 
@@ -137,9 +149,9 @@ void MainWindow::OpenDir(QString path) {
 
 void MainWindow::on_treeView_activated(QModelIndex index){
 
-
-    pathlabel->setText(((QDirModel*)ui->treeView->model())->filePath(index));
-    this->OpenDir(((QDirModel*)ui->treeView->model())->filePath(index));
+    //previews folder files
+    pathlabel->setText(qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index));
+    this->OpenDir(qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index));
     settings->setValue("last_folder",pathlabel->text());
 }
 
@@ -162,17 +174,20 @@ void MainWindow::View() {
 
         files.append(file.filePath());
 
+        //make prewiev label, connect with clicked slots
         QProLabel * imagelabel = new QProLabel(0,q);
         connect(imagelabel,SIGNAL(dbl_clicked(int)),this,SLOT(label_dbl_clicked(int)));
         connect(imagelabel,SIGNAL(clicked(int)),this,SLOT(label_clicked(int)));
 
-        imagelabel->setFixedSize(previewsize,previewsize);
+        imagelabel->setFixedSize(settings->value("preview_size").toInt(),settings->value("preview_size").toInt());
+        imagelabel->setAlignment(Qt::AlignCenter);
 
         ui->gridLayout->addWidget(imagelabel,qRound(q/columncount),q%columncount);
         labels.append(imagelabel);
         q++;
     }
-
+    //resize in thread
+    previewsize = settings->value("preview_size").toInt();
     imagescaling->setFuture(QtConcurrent::mapped(files, &MainWindow::Scaled));
 }
 
@@ -183,7 +198,8 @@ void MainWindow::on_actionQuit_triggered() {
 
 void MainWindow::Update() {
 
-    columncount = ui->scrollArea->size().width()/previewsize;
+    //update some settings
+    columncount = ui->scrollArea->size().width()/settings->value("preview_size").toInt();
 
     if (columncount == 0) {
         columncount = 1;
@@ -195,7 +211,6 @@ void MainWindow::Update() {
         rowcount = contentlist.size() / columncount + 1;
     }
 
-    settings->setValue("preview_size",previewsize);
 }
 
 void MainWindow::label_dbl_clicked(int id) {
@@ -219,6 +234,7 @@ void MainWindow::OpenPhoto(int id) {
 
 void MainWindow::resize() {
 
+    //on resize event
     Update();
 
     for (int i = 0; i < labels.size(); i++) {
@@ -231,16 +247,16 @@ void MainWindow::resize() {
 
 void MainWindow::zoomin_clicked()
 {
-    if ( previewsize + 25 < ui->scrollArea->size().width()) {
-        previewsize += 25;        
+    if ( settings->value("preview_size").toInt() + settings->value("preview_step").toInt() < ui->scrollArea->size().width()) {
+         settings->setValue("preview_size",settings->value("preview_size").toInt() + settings->value("preview_step").toInt());
     }
     View();
 }
 
 void MainWindow::zoomout_clicked()
 {
-    if ( previewsize - 25 > 25 ) {
-        previewsize -= 25;
+    if ( settings->value("preview_size").toInt() - settings->value("preview_step").toInt() > settings->value("preview_step").toInt() ) {
+        settings->setValue("preview_size",settings->value("preview_size").toInt() - settings->value("preview_step").toInt());
     }
     View();
 }
@@ -264,7 +280,6 @@ void MainWindow::resized_image(int q) {
 void MainWindow::ShowPreview(int q) {
 
     labels[q]->setPixmap(QPixmap::fromImage(imagescaling->resultAt(q)));
-    labels[q]->setFixedSize(previewsize,previewsize);
 }
 
 QImage MainWindow::Scaled(const QString &file) {

@@ -23,11 +23,14 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
+    this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
 
     settings = new QSettings("effy","effy");
 
     ui->rootfolderEdit->setText(settings->value("root_folder").toString());
     ui->savefolderBox->setChecked(settings->value("save_last_folder").toBool());
+    ui->previewsizespinBox->setValue(settings->value("preview_size").toInt());
+    ui->previewstepspinBox->setValue(settings->value("preview_step").toInt());
 
 }
 
@@ -60,4 +63,14 @@ void SettingsWindow::on_savefolderBox_stateChanged(int) {
 void SettingsWindow::on_rootfolderEdit_editingFinished() {
 
     settings->setValue("root_folder",ui->rootfolderEdit->text());
+}
+
+void SettingsWindow::on_previewsizespinBox_valueChanged(int value) {
+
+    settings->setValue("preview_size",value);
+}
+
+void SettingsWindow::on_previewstepspinBox_valueChanged(int value) {
+
+    settings->setValue("preview_step",value);
 }

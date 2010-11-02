@@ -21,6 +21,7 @@
 ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWindow(parent), ui(new Ui::ViewWindow) {
 
     ui->setupUi(this);
+    this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
 
     contentlist = content;
 
@@ -40,6 +41,8 @@ void ViewWindow::ViewPhoto(QString file) {
     image = new QPixmap(file);
 
     *image = image->scaledToHeight(600,Qt::SmoothTransformation);
-
+    ui->label->setAlignment(Qt::AlignCenter);
     ui->label->setPixmap(*image);
+
+    delete image;
 }
