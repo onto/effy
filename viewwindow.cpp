@@ -46,3 +46,8 @@ void ViewWindow::ViewPhoto(QString file) {
 
     delete image;
 }
+
+void ViewWindow::on_actionQuit_triggered() {
+
+    close();
+}

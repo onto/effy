@@ -39,6 +39,9 @@ private:
 
     void ViewPhoto(QString file);
 
+
+private slots:
+    void on_actionQuit_triggered();
 };
 
 #endif // VIEWWINDOW_H

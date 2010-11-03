@@ -39,14 +39,14 @@ private:
 
 private slots:
 
+    void on_pushButton_clicked();
     void on_toolbarBox_stateChanged(int );
     void on_previewstepSlider_valueChanged(int value);
     void on_previewsizeSlider_valueChanged(int value);
     void on_rootfolderEdit_editingFinished();
     void on_savefolderBox_stateChanged(int );
     void on_toolButton_clicked();
-    void on_buttonBox_rejected();
-    void on_buttonBox_accepted();
+
 };
 
 #endif // SETTINGSWINDOW_H

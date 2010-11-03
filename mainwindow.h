@@ -43,6 +43,7 @@ private:
     QFileInfoList contentlist;
     int columncount;
     int rowcount;
+    QString currentpath;
     ViewWindow * viewwindow;
     SettingsWindow * settingswindow;
     QList<QProLabel *> labels;

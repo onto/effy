@@ -25,6 +25,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
 
+    this->setWindowTitle("Settings");
+
     settings = new QSettings("effy","effy");
 
     ui->rootfolderEdit->setText(settings->value("root_folder").toString());
@@ -44,16 +46,6 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
 SettingsWindow::~SettingsWindow()
 {
     delete ui;
-}
-
-void SettingsWindow::on_buttonBox_accepted(){
-
-    close();
-}
-
-void SettingsWindow::on_buttonBox_rejected() {
-
-
 }
 
 void SettingsWindow::on_toolButton_clicked() {
@@ -86,4 +78,9 @@ void SettingsWindow::on_previewstepSlider_valueChanged(int value) {
 void SettingsWindow::on_toolbarBox_stateChanged(int ) {
 
     settings->setValue("show_toolbar",ui->toolbarBox->isChecked());
+}
+
+void SettingsWindow::on_pushButton_clicked() {
+
+    close();
 }

@@ -84,6 +84,8 @@ void MainWindow::SetTreeConf() {
     if (settings->value("save_last_folder").toBool()) {
         ui->treeView->scrollTo(model->index(settings->value("last_folder").toString()));
     }
+
+    currentpath = "";
 }
 
 void MainWindow::SetToolBarConf() {
@@ -156,10 +158,16 @@ void MainWindow::OpenDir(QString path) {
 
 void MainWindow::on_treeView_activated(QModelIndex index){
 
-    //previews folder files
-    pathlabel->setText(qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index));
-    this->OpenDir(qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index));
-    settings->setValue("last_folder",pathlabel->text());
+    QString path = qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index);
+
+    if (currentpath != path) {
+
+        //previews folder files
+        pathlabel->setText(path);
+        this->OpenDir(path);
+        settings->setValue("last_folder",path);
+        currentpath = path;
+    }
 }
 
 void MainWindow::View() {
