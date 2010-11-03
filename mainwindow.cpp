@@ -20,7 +20,7 @@
 
 #ifndef QT_NO_CONCURRENT
 
-int MainWindow::previewsize = 0;
+int MainWindow::previewsize = 1;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -89,7 +89,6 @@ void MainWindow::SetTreeConf() {
         ui->treeView->scrollTo(model->index(settings->value("last_folder").toString()));
     }
 }
-
 
 void MainWindow::SetToolBarConf() {
 
@@ -165,6 +164,12 @@ void MainWindow::View() {
     qDeleteAll(labels);
     labels.clear();
 
+    qDeleteAll(previewlayouts);
+    previewlayouts.clear();
+
+    qDeleteAll(namelabels);
+    namelabels.clear();
+
     Update();
 
     QStringList files;
@@ -182,8 +187,20 @@ void MainWindow::View() {
         imagelabel->setFixedSize(settings->value("preview_size").toInt(),settings->value("preview_size").toInt());
         imagelabel->setAlignment(Qt::AlignCenter);
 
-        ui->gridLayout->addWidget(imagelabel,qRound(q/columncount),q%columncount);
+        QVBoxLayout * layout = new QVBoxLayout();        
+
+        QLabel * namelabel = new QLabel(file.fileName());
+
+        namelabel->setFixedWidth(settings->value("preview_size").toInt());
+
+        layout->addWidget(imagelabel);
+        layout->addWidget(namelabel);
+
+        ui->gridLayout->addLayout(layout,qRound(q/columncount),q%columncount);
+
         labels.append(imagelabel);
+        namelabels.append(namelabel);
+        previewlayouts.append(layout);
         q++;
     }
     //resize in thread
@@ -237,8 +254,17 @@ void MainWindow::resize() {
     //on resize event
     Update();
 
+    qDeleteAll(previewlayouts);
+    previewlayouts.clear();
+
     for (int i = 0; i < labels.size(); i++) {
-        ui->gridLayout->addWidget(labels[i],qRound(i/columncount),i%columncount);
+        QVBoxLayout * layout = new QVBoxLayout();
+
+        layout->addWidget(labels[i]);
+        layout->addWidget(namelabels[i]);
+
+        previewlayouts.append(layout);
+        ui->gridLayout->addLayout(layout,qRound(i/columncount),i%columncount);
     }
 
     settings->setValue("window_size",this->saveGeometry());

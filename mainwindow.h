@@ -46,6 +46,8 @@ private:
     ViewWindow * viewwindow;
     SettingsWindow * settingswindow;
     QList<QProLabel *> labels;
+    QList<QLabel *> namelabels;
+    QList<QVBoxLayout *> previewlayouts;
     QFutureWatcher<QImage> * imagescaling;
     static int previewsize;
     Ui::MainWindow *ui;
