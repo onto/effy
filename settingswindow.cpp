@@ -28,9 +28,16 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     settings = new QSettings("effy","effy");
 
     ui->rootfolderEdit->setText(settings->value("root_folder").toString());
+
     ui->savefolderBox->setChecked(settings->value("save_last_folder").toBool());
-    ui->previewsizespinBox->setValue(settings->value("preview_size").toInt());
-    ui->previewstepspinBox->setValue(settings->value("preview_step").toInt());
+
+    ui->previewsizeSlider->setValue(settings->value("preview_size").toInt());
+    ui->previewsizeEdit->setText(settings->value("preview_size").toString());
+
+    ui->previewstepSlider->setValue(settings->value("preview_step").toInt());
+    ui->previewstepEdit->setText(settings->value("preview_step").toString());
+
+    ui->toolbarBox->setChecked(settings->value("show_toolbar").toBool());
 
 }
 
@@ -65,12 +72,18 @@ void SettingsWindow::on_rootfolderEdit_editingFinished() {
     settings->setValue("root_folder",ui->rootfolderEdit->text());
 }
 
-void SettingsWindow::on_previewsizespinBox_valueChanged(int value) {
+void SettingsWindow::on_previewsizeSlider_valueChanged(int value) {
 
     settings->setValue("preview_size",value);
+    ui->previewsizeEdit->setText(QString::number(value));
 }
-
-void SettingsWindow::on_previewstepspinBox_valueChanged(int value) {
+void SettingsWindow::on_previewstepSlider_valueChanged(int value) {
 
     settings->setValue("preview_step",value);
+    ui->previewstepEdit->setText(QString::number(value));
+}
+
+void SettingsWindow::on_toolbarBox_stateChanged(int ) {
+
+    settings->setValue("show_toolbar",ui->toolbarBox->isChecked());
 }

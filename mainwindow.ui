@@ -123,8 +123,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>32</width>
-     <height>32</height>
+     <width>16</width>
+     <height>16</height>
     </size>
    </property>
    <attribute name="toolBarArea">

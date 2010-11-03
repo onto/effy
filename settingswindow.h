@@ -38,8 +38,10 @@ private:
     QSettings * settings;
 
 private slots:
-    void on_previewstepspinBox_valueChanged(int );
-    void on_previewsizespinBox_valueChanged(int );
+
+    void on_toolbarBox_stateChanged(int );
+    void on_previewstepSlider_valueChanged(int value);
+    void on_previewsizeSlider_valueChanged(int value);
     void on_rootfolderEdit_editingFinished();
     void on_savefolderBox_stateChanged(int );
     void on_toolButton_clicked();

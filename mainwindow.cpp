@@ -36,10 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
     SetTreeConf();
     SetToolBarConf();
 
-    //connect with resize event
-    connect(ui->splitter,SIGNAL(splitterMoved(int,int)),this,SLOT(resize()));
-    connect(this,SIGNAL(widget_resize()),this,SLOT(resize()));
-
     imagescaling = new QFutureWatcher<QImage>(this);
     connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(resized_image(int)));
 }
@@ -92,8 +88,14 @@ void MainWindow::SetTreeConf() {
 
 void MainWindow::SetToolBarConf() {
 
+    if (settings->value("show_toolbar").toBool()) {
+        ui->toolBar->setVisible(true);
+    } else {
+        ui->toolBar->setVisible(false);
+    }
+
     //go home button
-    QPushButton * gohomebutton = new QPushButton(QIcon::fromTheme("go-home"),"");
+    QPushButton * gohomebutton = new QPushButton(QIcon("./icons/go-home.png"),"");
     connect(gohomebutton,SIGNAL(clicked()),this,SLOT(gohome_clicked()));
     ui->toolBar->addWidget(gohomebutton);
     toolbarbuttons.append(gohomebutton);
@@ -101,7 +103,7 @@ void MainWindow::SetToolBarConf() {
     ui->toolBar->addSeparator();
 
     //settings button
-    QPushButton * settingsbutton = new QPushButton(QIcon::fromTheme("emblem-system"),"");
+    QPushButton * settingsbutton = new QPushButton(QIcon("./icons/emblem-system.png"),"");
     connect(settingsbutton,SIGNAL(clicked()),this,SLOT(settings_clicked()));
     ui->toolBar->addWidget(settingsbutton);
     toolbarbuttons.append(settingsbutton);
@@ -109,19 +111,21 @@ void MainWindow::SetToolBarConf() {
     ui->toolBar->addSeparator();
 
     //zoom in button
-    QPushButton * zoominbutton = new QPushButton(QIcon::fromTheme("zoom-in"),"");
+    QPushButton * zoominbutton = new QPushButton(QIcon("./icons/zoom-in.png"),"");
     connect(zoominbutton,SIGNAL(clicked()),this,SLOT(zoomin_clicked()));
     ui->toolBar->addWidget(zoominbutton);
     toolbarbuttons.append(zoominbutton);
 
     //zoom out button
-    QPushButton * zoomoutbutton = new QPushButton(QIcon::fromTheme("zoom-out"),"");
+    QPushButton * zoomoutbutton = new QPushButton(QIcon("./icons/zoom-out.png"),"");
     connect(zoomoutbutton,SIGNAL(clicked()),this,SLOT(zoomout_clicked()));
     ui->toolBar->addWidget(zoomoutbutton);
     toolbarbuttons.append(zoomoutbutton);
 }
 
 void MainWindow::SetWidgetsConf() {
+
+    this->setWindowTitle("Effy");
 
     pathlabel = new QLabel("");
     ui->statusBar->addWidget(pathlabel);
@@ -130,6 +134,10 @@ void MainWindow::SetWidgetsConf() {
     ui->splitter->restoreState(settings->value("splitter_state").toByteArray());
 
     previewsize = settings->value("preview_size").toInt();
+
+    //connect with resize event
+    connect(ui->splitter,SIGNAL(splitterMoved(int,int)),this,SLOT(resize()));
+    connect(this,SIGNAL(widget_resize()),this,SLOT(resize()));
 
 }
 

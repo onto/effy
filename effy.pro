@@ -24,4 +24,8 @@ FORMS    += mainwindow.ui \
     settingswindow.ui
 
 OTHER_FILES += \
-    Makefile
+    Makefile \
+    icons/zoom-out.png \
+    icons/zoom-in.png \
+    icons/go-home.png \
+    icons/emblem-system.png

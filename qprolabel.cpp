@@ -20,31 +20,23 @@
 QProLabel::QProLabel(QWidget *parent, int i) :
     QLabel(parent) {
     id = i;
-    click = 0;
 }
 
-void QProLabel::mouseReleaseEvent(QMouseEvent *ev) {
+void QProLabel::mousePressEvent(QMouseEvent *ev) {
 
-    switch (ev->button()) {
-    case Qt::LeftButton : {
-            click++;
-            click %=2;
-            if (click == 0) {
-                emit dbl_clicked(id);
-            }
-            emit clicked(id);
-            break;
-        }
+    switch (ev->type()) {
+    case QMouseEvent::MouseButtonDblClick : emit dbl_clicked(id); break;
+    case QMouseEvent::MouseButtonPress : emit clicked(id); break;
     default: break;
     }
 }
 
 void QProLabel::setUnHighlight() {
-    click = 0;
+
     setStyleSheet("");
 }
 
 void QProLabel::setHighlight() {
-    click = 1;
+
     setStyleSheet("background-color: rgb(255,255,255);");
 }
