@@ -41,6 +41,12 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
 
     ui->toolbarBox->setChecked(settings->value("show_toolbar").toBool());
 
+    if (settings->value("icon_size").toInt() == 24) {
+        ui->radioButton->setChecked(true);
+    } else {
+        ui->radioButton_2->setChecked(true);
+    }
+
 }
 
 SettingsWindow::~SettingsWindow()
@@ -83,4 +89,19 @@ void SettingsWindow::on_toolbarBox_stateChanged(int ) {
 void SettingsWindow::on_pushButton_clicked() {
 
     close();
+}
+
+void SettingsWindow::on_radioButton_clicked() {
+
+
+}
+
+void SettingsWindow::on_radioButton_toggled(bool) {
+
+    settings->setValue("icon_size","24");
+}
+
+void SettingsWindow::on_radioButton_2_toggled(bool) {
+
+    settings->setValue("icon_size","32");
 }

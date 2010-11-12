@@ -18,7 +18,6 @@
 #ifndef VIEWWINDOW_H
 #define VIEWWINDOW_H
 
-#include <QMainWindow>
 #include <QtGui>
 
 namespace Ui {
@@ -36,12 +35,31 @@ public:
 private:
     Ui::ViewWindow *ui;
     QFileInfoList contentlist;
+    QList<QPushButton *> toolbarbuttons;
+    QPixmap * image;
+    QLabel * zoomlabel;
+    QSize imagesize;
+    QSettings * settings;
+    int photoid;
+    int scale;
+    bool fit;
 
-    void ViewPhoto(QString file);
+    void InitToolBar();
+    void ViewPhoto();
+    void OpenPhoto();
+
+    void resizeEvent(QResizeEvent *);
 
 
 private slots:
     void on_actionQuit_triggered();
+    void go_previous();
+    void go_next();
+    void zoom_in();
+    void zoom_out();
+    void zoom_original();
+    void zoom_fit();
+    void fullscreen();
 };
 
 #endif // VIEWWINDOW_H

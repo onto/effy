@@ -68,6 +68,7 @@ private:
     void Update();
 
 private slots:
+    void on_actionAbout_Qt_triggered();
     void gohome_clicked();
     void zoomin_clicked();
     void zoomout_clicked();

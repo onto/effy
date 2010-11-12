@@ -43,6 +43,10 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow() {
 
     qDeleteAll(toolbarbuttons);
+    qDeleteAll(labels);
+    qDeleteAll(namelabels);
+    qDeleteAll(previewlayouts);
+    delete pathlabel;
     delete model;
     delete ui;
 }
@@ -123,6 +127,13 @@ void MainWindow::SetToolBarConf() {
     connect(zoomoutbutton,SIGNAL(clicked()),this,SLOT(zoomout_clicked()));
     ui->toolBar->addWidget(zoomoutbutton);
     toolbarbuttons.append(zoomoutbutton);
+
+    for (int i = 0; i < toolbarbuttons.size(); i++) {
+
+        toolbarbuttons.at(i)->setFlat(true);
+        toolbarbuttons.at(i)->setFixedSize(settings->value("icon_size").toInt()+4,settings->value("icon_size").toInt()+4);
+        toolbarbuttons.at(i)->setIconSize(QSize(settings->value("icon_size").toInt(),settings->value("icon_size").toInt()));
+    }
 }
 
 void MainWindow::SetWidgetsConf() {
@@ -336,5 +347,12 @@ QImage MainWindow::Scaled(const QString &file) {
 
     return *image;
 }
+
+void MainWindow::on_actionAbout_Qt_triggered() {
+
+    QMessageBox about;
+    about.aboutQt(0,tr("About Qt"));
+}
+
 
 #endif // QT_NO_CONCURRENT
