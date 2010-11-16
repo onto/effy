@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
 
+    OnClose();
+
     qDeleteAll(toolbarbuttons);
     qDeleteAll(labels);
     qDeleteAll(namelabels);
@@ -94,11 +96,7 @@ void MainWindow::SetTreeConf() {
 
 void MainWindow::SetToolBarConf() {
 
-    if (settings->value("show_toolbar").toBool()) {
-        ui->toolBar->setVisible(true);
-    } else {
-        ui->toolBar->setVisible(false);
-    }
+    ui->toolBar->setVisible(settings->value("show_toolbar").toBool());
 
     //go home button
     QPushButton * gohomebutton = new QPushButton(QIcon("./icons/go-home.png"),"");
@@ -243,7 +241,7 @@ void MainWindow::on_actionQuit_triggered() {
 void MainWindow::Update() {
 
     //update some settings
-    columncount = ui->scrollArea->size().width()/settings->value("preview_size").toInt();
+    columncount = ui->scrollArea->width()/(settings->value("preview_size").toInt() + 2 * ui->gridLayout->horizontalSpacing());
 
     if (columncount == 0) {
         columncount = 1;
@@ -354,5 +352,9 @@ void MainWindow::on_actionAbout_Qt_triggered() {
     about.aboutQt(0,tr("About Qt"));
 }
 
+void MainWindow::OnClose() {
+
+    settings->setValue("show_toolbar",ui->toolBar->isEnabled());
+}
 
 #endif // QT_NO_CONCURRENT

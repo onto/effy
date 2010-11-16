@@ -45,8 +45,8 @@ private:
     bool fit;
 
     void InitToolBar();
-    void ViewPhoto();
     void OpenPhoto();
+    void Update();
 
     void resizeEvent(QResizeEvent *);
 
@@ -55,10 +55,16 @@ private slots:
     void on_actionQuit_triggered();
     void go_previous();
     void go_next();
+    void go_first();
+    void go_last();
     void zoom_in();
     void zoom_out();
     void zoom_original();
     void zoom_fit();
+    void rotate_right();
+    void rotate_left();
+    void flip_vertical();
+    void flip_horizontal();
     void fullscreen();
 };
 

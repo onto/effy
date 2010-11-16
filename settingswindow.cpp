@@ -39,8 +39,6 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->previewstepSlider->setValue(settings->value("preview_step").toInt());
     ui->previewstepEdit->setText(settings->value("preview_step").toString());
 
-    ui->toolbarBox->setChecked(settings->value("show_toolbar").toBool());
-
     if (settings->value("icon_size").toInt() == 24) {
         ui->radioButton->setChecked(true);
     } else {
@@ -79,11 +77,6 @@ void SettingsWindow::on_previewstepSlider_valueChanged(int value) {
 
     settings->setValue("preview_step",value);
     ui->previewstepEdit->setText(QString::number(value));
-}
-
-void SettingsWindow::on_toolbarBox_stateChanged(int ) {
-
-    settings->setValue("show_toolbar",ui->toolbarBox->isChecked());
 }
 
 void SettingsWindow::on_pushButton_clicked() {

@@ -33,4 +33,9 @@ OTHER_FILES += \
     icons/go-previous.png \
     icons/go-next.png \
     icons/go-home.png \
-    icons/emblem-system.png
+    icons/emblem-system.png \
+    icons/rotate-right.png \
+    icons/rotate-left.png \
+    icons/flip-vertical.png \
+    icons/flip-horizontal.png \
+    effy.conf

@@ -134,6 +134,9 @@
      <height>32</height>
     </size>
    </property>
+   <property name="floatable">
+    <bool>true</bool>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
