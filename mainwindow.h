@@ -66,7 +66,6 @@ private:
     void ShowPreview(int id);
     static QImage Scaled(const QString &file);
     void Update();
-    void OnClose();
 
 private slots:
     void on_actionAbout_Qt_triggered();

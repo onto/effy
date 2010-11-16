@@ -38,4 +38,6 @@ OTHER_FILES += \
     icons/rotate-left.png \
     icons/flip-vertical.png \
     icons/flip-horizontal.png \
-    effy.conf
+    effy.conf \
+    icons/go-last.png \
+    icons/go-first.png

@@ -45,10 +45,14 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
         ui->radioButton_2->setChecked(true);
     }
 
+    ui->checkBox->setChecked(settings->value("show_mainwindow_toolbar").toBool());
+    ui->checkBox_2->setChecked(settings->value("show_viewwindow_toolbar").toBool());
+
 }
 
 SettingsWindow::~SettingsWindow()
 {
+
     delete ui;
 }
 
@@ -97,4 +101,14 @@ void SettingsWindow::on_radioButton_toggled(bool) {
 void SettingsWindow::on_radioButton_2_toggled(bool) {
 
     settings->setValue("icon_size","32");
+}
+
+void SettingsWindow::on_checkBox_toggled(bool) {
+
+    settings->setValue("show_mainwindow_toolbar",ui->checkBox->isChecked());
+}
+
+void SettingsWindow::on_checkBox_2_toggled(bool) {
+
+    settings->setValue("show_viewwindow_toolbar",ui->checkBox_2->isChecked());
 }

@@ -38,6 +38,8 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
     this->restoreGeometry(settings->value("viewwindow_size").toByteArray());
     ui->scrollArea->setGeometry(settings->value("photoarea_size").toRect());
 
+    ui->toolBar->setShown(settings->value("show_viewwindow_toolbar").toBool());
+
     InitToolBar();
 
     OpenPhoto();
@@ -45,6 +47,9 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
 }
 
 ViewWindow::~ViewWindow() {
+
+    QSettings settings("effy","effy");
+    settings.setValue("show_viewwindow_toolbar",ui->toolBar->isEnabled());
 
     delete image;
     qDeleteAll(toolbarbuttons);
@@ -81,6 +86,8 @@ void ViewWindow::Update() {
 }
 
 void ViewWindow::InitToolBar() {
+
+    ui->toolBar->setShown(settings->value("show_viewwindow_toolbar").toBool());
 
     //go to first
     QPushButton * first = new QPushButton(QIcon("./icons/go-first.png"),"");

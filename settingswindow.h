@@ -39,6 +39,8 @@ private:
 
 private slots:
 
+    void on_checkBox_2_toggled(bool checked);
+    void on_checkBox_toggled(bool checked);
     void on_radioButton_2_toggled(bool checked);
     void on_radioButton_toggled(bool checked);
     void on_radioButton_clicked();
