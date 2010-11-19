@@ -38,7 +38,6 @@ private:
     QList<QPushButton *> toolbarbuttons;
     QPixmap * image;
     QLabel * zoomlabel;
-    QSize imagesize;
     QSettings * settings;
     int photoid;
     int scale;

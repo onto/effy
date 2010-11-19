@@ -127,7 +127,7 @@ void MainWindow::SetToolBarConf() {
     for (int i = 0; i < toolbarbuttons.size(); i++) {
 
         toolbarbuttons.at(i)->setFlat(true);
-        toolbarbuttons.at(i)->setFixedSize(settings->value("icon_size").toInt()+4,settings->value("icon_size").toInt()+4);
+        toolbarbuttons.at(i)->setFixedSize(settings->value("icon_size").toInt()+8,settings->value("icon_size").toInt()+8);
         toolbarbuttons.at(i)->setIconSize(QSize(settings->value("icon_size").toInt(),settings->value("icon_size").toInt()));
     }
 }
@@ -175,15 +175,18 @@ void MainWindow::on_treeView_activated(QModelIndex index){
         settings->setValue("last_folder",path);
         currentpath = path;
     }
+
 }
 
 void MainWindow::View() {
 
+    //stop resize threads
     if (imagescaling->isRunning()) {
         imagescaling->cancel();
         imagescaling->waitForFinished();
     }
 
+    //clear labels
     qDeleteAll(labels);
     labels.clear();
 
@@ -226,6 +229,7 @@ void MainWindow::View() {
         previewlayouts.append(layout);
         q++;
     }
+
     //resize in thread
     previewsize = settings->value("preview_size").toInt();
     imagescaling->setFuture(QtConcurrent::mapped(files, &MainWindow::Scaled));

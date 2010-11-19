@@ -309,10 +309,16 @@ void ViewWindow::rotate_right() {
 
 void ViewWindow::flip_horizontal() {
 
+    *image = image->fromImage(image->toImage().mirrored(true,false));
 
+    zoom_fit();
+    Update();
 }
 
 void ViewWindow::flip_vertical() {
 
+    *image = image->fromImage(image->toImage().mirrored(false,true));
 
+    zoom_fit();
+    Update();
 }
