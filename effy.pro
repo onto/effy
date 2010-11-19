@@ -25,9 +25,9 @@ FORMS    += mainwindow.ui \
 
 OTHER_FILES += \
     Makefile \
-    icons/zoom-out.png \
     icons/zoom-original.png \
     icons/zoom-in.png \
+    icons/zoom-out.png \
     icons/zoom-best-fit.png \
     icons/view-fullscreen.png \
     icons/go-previous.png \
