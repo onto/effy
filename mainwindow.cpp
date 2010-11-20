@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
 
+    delete viewwindow;
+    delete settingswindow;
     qDeleteAll(toolbarbuttons);
     qDeleteAll(labels);
     qDeleteAll(namelabels);
@@ -80,19 +82,36 @@ void MainWindow::SetTreeConf() {
     model = new QDirModel;
     model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
     ui->treeView->setModel(model);
-    ui->treeView->setRootIndex(model->index(settings->value("root_folder").toString()));
+
+    QString path;
+
+    path = settings->value("root_folder").toString();
+
+    if (path == "/") {
+        path = "";
+    } else {
+        path += "/..";
+    }
+
+    ui->treeView->setRootIndex(model->index(path));
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
 
     if (settings->value("save_last_folder").toBool()) {
         ui->treeView->scrollTo(model->index(settings->value("last_folder").toString()));
+    } else {
+        ui->treeView->scrollTo(model->index(settings->value("root_folder").toString()));
     }
 
     currentpath = "";
 }
 
 void MainWindow::SetToolBarConf() {
+
+    ui->toolBar->clear();
+    qDeleteAll(toolbarbuttons);
+    toolbarbuttons.clear();
 
     ui->toolBar->setShown(settings->value("show_mainwindow_toolbar").toBool());
 
@@ -152,13 +171,18 @@ void MainWindow::SetWidgetsConf() {
 
 void MainWindow::SaveSettings() {
 
-};
+}
 
 void MainWindow::OpenDir(QString path) {
 
     //open dir, save name of files in dir
     QDir dir(path);
-    contentlist = dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.jpeg" << "*.gif",QDir::Files);
+
+    contentlist = dir.entryInfoList(settings->value("image_formats").toStringList(),QDir::Files);
+
+    pathlabel->setText(path);
+    settings->setValue("last_folder",path);
+    currentpath = path;
 
     View();
 }
@@ -168,14 +192,8 @@ void MainWindow::on_treeView_activated(QModelIndex index){
     QString path = qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index);
 
     if (currentpath != path) {
-
-        //previews folder files
-        pathlabel->setText(path);
         this->OpenDir(path);
-        settings->setValue("last_folder",path);
-        currentpath = path;
     }
-
 }
 
 void MainWindow::View() {
@@ -254,7 +272,6 @@ void MainWindow::Update() {
     } else {
         rowcount = contentlist.size() / columncount + 1;
     }
-
 }
 
 void MainWindow::label_dbl_clicked(int id) {
@@ -300,16 +317,24 @@ void MainWindow::resize() {
 
 void MainWindow::zoomin_clicked()
 {
-    if ( settings->value("preview_size").toInt() + settings->value("preview_step").toInt() < ui->scrollArea->size().width()) {
-         settings->setValue("preview_size",settings->value("preview_size").toInt() + settings->value("preview_step").toInt());
+    int size,step;
+    size = settings->value("preview_size").toInt();
+    step = settings->value("preview_step").toInt();
+
+    if ( size + step < ui->scrollArea->size().width()) {
+         settings->setValue("preview_size", size + step);
     }
     View();
 }
 
 void MainWindow::zoomout_clicked()
 {
-    if ( settings->value("preview_size").toInt() - settings->value("preview_step").toInt() > settings->value("preview_step").toInt() ) {
-        settings->setValue("preview_size",settings->value("preview_size").toInt() - settings->value("preview_step").toInt());
+    int size,step;
+    size = settings->value("preview_size").toInt();
+    step = settings->value("preview_step").toInt();
+
+    if ( size - step > step ) {
+        settings->setValue("preview_size",size - step);
     }
     View();
 }
@@ -318,6 +343,13 @@ void MainWindow::settings_clicked() {
 
     settingswindow = new SettingsWindow();
     settingswindow->show();
+    connect(settingswindow,SIGNAL(close_window()),this,SLOT(update_settings()));
+}
+
+void MainWindow::update_settings() {
+
+    SetTreeConf();
+    SetToolBarConf();
 }
 
 void MainWindow::gohome_clicked() {

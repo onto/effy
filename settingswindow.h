@@ -39,17 +39,22 @@ private:
 
 private slots:
 
+    void on_radioButton_3_toggled(bool checked);
     void on_checkBox_2_toggled(bool checked);
     void on_checkBox_toggled(bool checked);
     void on_radioButton_2_toggled(bool checked);
     void on_radioButton_toggled(bool checked);
-    void on_radioButton_clicked();
     void on_pushButton_clicked();
     void on_previewstepSlider_valueChanged(int value);
     void on_previewsizeSlider_valueChanged(int value);
     void on_rootfolderEdit_editingFinished();
     void on_savefolderBox_stateChanged(int );
     void on_toolButton_clicked();
+
+signals:
+
+    void close_window();
+;
 
 };
 

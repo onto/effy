@@ -48,12 +48,12 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
 
 ViewWindow::~ViewWindow() {
 
-    QSettings settings("effy","effy");
-    settings.setValue("show_viewwindow_toolbar",ui->toolBar->isEnabled());
 
     delete image;
     qDeleteAll(toolbarbuttons);
+    toolbarbuttons.clear();
     delete zoomlabel;
+    delete settings;
     delete ui;
 }
 
@@ -82,7 +82,6 @@ void ViewWindow::Update() {
 
     zoomlabel->setText(tr("Zoom: ")+QString::number(scale)+tr("%"));
     this->setWindowTitle(contentlist.at(photoid).fileName());
-
 }
 
 void ViewWindow::InitToolBar() {
@@ -164,14 +163,6 @@ void ViewWindow::InitToolBar() {
     connect(flipvertical,SIGNAL(clicked()),this,SLOT(flip_vertical()));
     ui->toolBar->addWidget(flipvertical);
     toolbarbuttons.append(flipvertical);
-
-    ui->toolBar->addSeparator();
-
-    //zoom fullscreen
-    QPushButton * zoomfullscreen = new QPushButton(QIcon("./icons/view-fullscreen.png"),"");
-    connect(zoomfullscreen,SIGNAL(clicked()),this,SLOT(fullscreen()));
-    ui->toolBar->addWidget(zoomfullscreen);
-    toolbarbuttons.append(zoomfullscreen);
 
     ui->toolBar->addSeparator();
 
@@ -278,11 +269,6 @@ void ViewWindow::zoom_fit() {
 
     ui->label->setPixmap(image->scaledToWidth(qRound(image->width() * (scale)/100),Qt::SmoothTransformation));
     Update();
-}
-
-void ViewWindow::fullscreen() {
-\
-
 }
 
 void ViewWindow::rotate_left() {

@@ -39,20 +39,20 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->previewstepSlider->setValue(settings->value("preview_step").toInt());
     ui->previewstepEdit->setText(settings->value("preview_step").toString());
 
-    if (settings->value("icon_size").toInt() == 24) {
-        ui->radioButton->setChecked(true);
-    } else {
-        ui->radioButton_2->setChecked(true);
+    switch (settings->value("icon_size").toInt()) {
+    case 16: ui->radioButton_3->setChecked(true); break;
+    case 24: ui->radioButton->setChecked(true); break;
+    case 32: ui->radioButton_2->setChecked(true); break;
+
     }
 
     ui->checkBox->setChecked(settings->value("show_mainwindow_toolbar").toBool());
     ui->checkBox_2->setChecked(settings->value("show_viewwindow_toolbar").toBool());
-
 }
 
-SettingsWindow::~SettingsWindow()
-{
+SettingsWindow::~SettingsWindow() {
 
+    delete settings;
     delete ui;
 }
 
@@ -85,12 +85,8 @@ void SettingsWindow::on_previewstepSlider_valueChanged(int value) {
 
 void SettingsWindow::on_pushButton_clicked() {
 
+    emit close_window();
     close();
-}
-
-void SettingsWindow::on_radioButton_clicked() {
-
-
 }
 
 void SettingsWindow::on_radioButton_toggled(bool) {
@@ -111,4 +107,9 @@ void SettingsWindow::on_checkBox_toggled(bool) {
 void SettingsWindow::on_checkBox_2_toggled(bool) {
 
     settings->setValue("show_viewwindow_toolbar",ui->checkBox_2->isChecked());
+}
+
+void SettingsWindow::on_radioButton_3_toggled(bool) {
+
+    settings->setValue("icon_size","16");
 }

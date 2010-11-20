@@ -64,7 +64,6 @@ private slots:
     void rotate_left();
     void flip_vertical();
     void flip_horizontal();
-    void fullscreen();
 };
 
 #endif // VIEWWINDOW_H

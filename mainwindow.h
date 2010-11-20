@@ -79,6 +79,7 @@ private slots:
     void label_dbl_clicked(int id);
     void label_clicked(int id);
     void resize();
+    void update_settings();
 
 signals:
     void widget_resize();
