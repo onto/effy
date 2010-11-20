@@ -25,19 +25,5 @@ FORMS    += mainwindow.ui \
 
 OTHER_FILES += \
     Makefile \
-    icons/zoom-original.png \
-    icons/zoom-in.png \
-    icons/zoom-out.png \
-    icons/zoom-best-fit.png \
-    icons/view-fullscreen.png \
-    icons/go-previous.png \
-    icons/go-next.png \
-    icons/go-home.png \
-    icons/emblem-system.png \
-    icons/rotate-right.png \
-    icons/rotate-left.png \
-    icons/flip-vertical.png \
-    icons/flip-horizontal.png \
     effy.conf \
-    icons/go-last.png \
-    icons/go-first.png
+
