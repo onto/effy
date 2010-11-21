@@ -19,6 +19,7 @@
 #define VIEWWINDOW_H
 
 #include <QtGui>
+#include <aboutwindow.h>
 
 namespace Ui {
     class ViewWindow;
@@ -34,6 +35,7 @@ public:
 
 private:
     Ui::ViewWindow *ui;
+    Aboutwindow * aboutwindow;
     QFileInfoList contentlist;
     QList<QPushButton *> toolbarbuttons;
     QPixmap * image;
@@ -48,9 +50,13 @@ private:
     void Update();
 
     void resizeEvent(QResizeEvent *);
+    void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 
 private slots:
+    void on_actionAbout_Effy_triggered();
+    void on_actionAbout_Qt_triggered();
     void on_actionQuit_triggered();
     void go_previous();
     void go_next();

@@ -21,6 +21,7 @@
 #include <QtGui>
 #include "viewwindow.h"
 #include "settingswindow.h"
+#include "aboutwindow.h"
 #include <qprolabel.h>
 
 #ifndef QT_NO_CONCURRENT
@@ -46,6 +47,7 @@ private:
     QString currentpath;
     ViewWindow * viewwindow;
     SettingsWindow * settingswindow;
+    Aboutwindow * aboutwindow;
     QList<QProLabel *> labels;
     QList<QLabel *> namelabels;
     QList<QVBoxLayout *> previewlayouts;
@@ -68,11 +70,12 @@ private:
     void Update();
 
 private slots:
+    void on_actionAbout_effy_triggered();
     void on_actionAbout_Qt_triggered();
-    void gohome_clicked();
-    void zoomin_clicked();
-    void zoomout_clicked();
-    void settings_clicked();
+    void gohome();
+    void zoomin();
+    void zoomout();
+    void view_settings();
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
     void resized_image(int q);
@@ -86,6 +89,8 @@ signals:
 
 protected:
     void resizeEvent (QResizeEvent * event );
+    void closeEvent(QCloseEvent *);
+    void keyPressEvent(QKeyEvent * event);
 };
 
 #endif // QT_NO_CONCURRENT

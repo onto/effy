@@ -22,6 +22,7 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
 
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
+    this->setWindowIcon(QIcon("./icons/icon.png"));
 
     contentlist = content;
     photoid = id;
@@ -38,8 +39,6 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
     this->restoreGeometry(settings->value("viewwindow_size").toByteArray());
     ui->scrollArea->setGeometry(settings->value("photoarea_size").toRect());
 
-    ui->toolBar->setShown(settings->value("show_viewwindow_toolbar").toBool());
-
     InitToolBar();
 
     OpenPhoto();
@@ -47,7 +46,6 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
 }
 
 ViewWindow::~ViewWindow() {
-
 
     delete image;
     qDeleteAll(toolbarbuttons);
@@ -71,6 +69,68 @@ void ViewWindow::resizeEvent(QResizeEvent * e) {
     }
     default: break;
     }
+}
+
+void ViewWindow::keyPressEvent(QKeyEvent *event) {
+
+    if (event->modifiers() & Qt::ControlModifier) {
+
+        switch (event->key()) {
+
+        case (Qt::Key_Q) : {
+            this->close();
+            break;
+            }
+        case (Qt::Key_Left) : {
+            this->go_first();
+            break;
+            }
+        case (Qt::Key_Right) : {
+            this->go_last();
+            break;
+            }
+        case (Qt::Key_Minus) : {
+            this->zoom_out();
+            break;
+            }
+        case (Qt::Key_Equal) : {
+            this->zoom_in();
+            break;
+            }
+        case (Qt::Key_F) : {
+            this->zoom_fit();
+            break;
+            }
+        case (Qt::Key_0) : {
+            this->zoom_original();
+            break;
+            }
+        }
+
+    } else {
+
+        switch (event->key()) {
+
+        case (Qt::Key_Left) : {
+            this->go_previous();
+            break;
+            }
+        case (Qt::Key_Right) : {
+            this->go_next();
+            break;
+            }
+        }
+    }
+}
+
+void ViewWindow::wheelEvent(QWheelEvent *event) {
+
+    if (event->delta() < 0) {
+        go_next();
+    } else {
+        go_previous();
+    }
+
 }
 
 void ViewWindow::OpenPhoto() {
@@ -167,9 +227,13 @@ void ViewWindow::InitToolBar() {
     ui->toolBar->addSeparator();
 
     for (int i = 0; i < toolbarbuttons.size(); i++) {
+
         toolbarbuttons.at(i)->setFlat(true);
-        toolbarbuttons.at(i)->setFixedSize(settings->value("icon_size").toInt()+8,settings->value("icon_size").toInt()+8);
-        toolbarbuttons.at(i)->setIconSize(QSize(settings->value("icon_size").toInt(),settings->value("icon_size").toInt()));
+
+        int size = settings->value("icon_size").toInt();
+
+        toolbarbuttons.at(i)->setFixedSize(size+8,size+8);
+        toolbarbuttons.at(i)->setIconSize(QSize(size,size));
     }
 }
 
@@ -307,4 +371,16 @@ void ViewWindow::flip_vertical() {
 
     zoom_fit();
     Update();
+}
+
+void ViewWindow::on_actionAbout_Qt_triggered() {
+
+    QMessageBox about;
+    about.aboutQt(0,tr("About Qt"));
+}
+
+void ViewWindow::on_actionAbout_Effy_triggered() {
+
+    aboutwindow = new Aboutwindow();
+    aboutwindow->show();
 }

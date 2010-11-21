@@ -118,6 +118,8 @@
     <property name="title">
      <string>About</string>
     </property>
+    <addaction name="actionAbout_effy"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
    <addaction name="menuFile"/>
@@ -152,6 +154,11 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionAbout_effy">
+   <property name="text">
+    <string>About effy</string>
    </property>
   </action>
  </widget>

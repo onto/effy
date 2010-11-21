@@ -15,49 +15,28 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef SETTINGSWINDOW_H
-#define SETTINGSWINDOW_H
+#ifndef ABOUTWINDOW_H
+#define ABOUTWINDOW_H
 
 #include <QtGui>
 
-
 namespace Ui {
-    class SettingsWindow;
+    class Aboutwindow;
 }
 
-class SettingsWindow : public QMainWindow
+class Aboutwindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit SettingsWindow(QWidget *parent = 0);
-    ~SettingsWindow();
+    explicit Aboutwindow(QWidget *parent = 0);
+    ~Aboutwindow();
 
 private:
-    Ui::SettingsWindow *ui;
-    QSettings * settings;
+    Ui::Aboutwindow *ui;
 
 private slots:
-
-    void on_radioButton_3_toggled(bool checked);
-    void on_checkBox_2_toggled(bool checked);
-    void on_checkBox_toggled(bool checked);
-    void on_radioButton_2_toggled(bool checked);
-    void on_radioButton_toggled(bool checked);
     void on_pushButton_clicked();
-    void on_previewstepSlider_valueChanged(int value);
-    void on_previewsizeSlider_valueChanged(int value);
-    void on_rootfolderEdit_editingFinished();
-    void on_savefolderBox_stateChanged(int );
-    void on_toolButton_clicked();
-
-signals:
-    void close_window();
-
-protected:
-    void closeEvent(QCloseEvent *);
-    void keyPressEvent(QKeyEvent *);
-
 };
 
-#endif // SETTINGSWINDOW_H
+#endif // ABOUTWINDOW_H

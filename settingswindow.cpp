@@ -25,6 +25,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
 
+    this->setWindowIcon(QIcon("./icons/icon.png"));
+
     this->setWindowTitle("Settings");
 
     settings = new QSettings("effy","effy");
@@ -56,6 +58,25 @@ SettingsWindow::~SettingsWindow() {
     delete ui;
 }
 
+void SettingsWindow::closeEvent(QCloseEvent *) {
+
+    emit close_window();
+}
+
+void SettingsWindow::keyPressEvent(QKeyEvent *event) {
+
+    if (event->modifiers() & Qt::ControlModifier) {
+
+        switch (event->key()) {
+
+        case (Qt::Key_Q) : {
+            this->close();
+            break;
+        }
+        }
+    }
+}
+
 void SettingsWindow::on_toolButton_clicked() {
 
     ui->rootfolderEdit->setText(QFileDialog::getExistingDirectory(0,"Change Folder",""));
@@ -85,7 +106,6 @@ void SettingsWindow::on_previewstepSlider_valueChanged(int value) {
 
 void SettingsWindow::on_pushButton_clicked() {
 
-    emit close_window();
     close();
 }
 

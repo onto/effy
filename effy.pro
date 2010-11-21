@@ -12,16 +12,19 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     viewwindow.cpp \
     settingswindow.cpp \
-    qprolabel.cpp
+    qprolabel.cpp \
+    aboutwindow.cpp
 
 HEADERS  += mainwindow.h \
     viewwindow.h \
     settingswindow.h \
-    qprolabel.h
+    qprolabel.h \
+    aboutwindow.h
 
 FORMS    += mainwindow.ui \
     viewwindow.ui \
-    settingswindow.ui
+    settingswindow.ui \
+    aboutwindow.ui
 
 OTHER_FILES += \
     Makefile \
@@ -40,4 +43,5 @@ OTHER_FILES += \
     icons/go-first.png \
     icons/flip-vertical.png \
     icons/flip-horizontal.png \
-    icons/emblem-system.png
+    icons/emblem-system.png \
+    icons/icon.png
