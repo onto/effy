@@ -424,7 +424,7 @@ void MainWindow::on_actionAbout_Qt_triggered() {
     about.aboutQt(0,tr("About Qt"));
 }
 
-void MainWindow::on_actionAbout_effy_triggered() {
+void MainWindow::on_actionAbout_Effy_triggered() {
 
     aboutwindow = new Aboutwindow();
     aboutwindow->show();

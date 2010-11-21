@@ -118,7 +118,7 @@
     <property name="title">
      <string>About</string>
     </property>
-    <addaction name="actionAbout_effy"/>
+    <addaction name="actionAbout_Effy"/>
     <addaction name="separator"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
@@ -156,9 +156,9 @@
     <string>About Qt</string>
    </property>
   </action>
-  <action name="actionAbout_effy">
+  <action name="actionAbout_Effy">
    <property name="text">
-    <string>About effy</string>
+    <string>About Effy...</string>
    </property>
   </action>
  </widget>

@@ -70,7 +70,7 @@ private:
     void Update();
 
 private slots:
-    void on_actionAbout_effy_triggered();
+    void on_actionAbout_Effy_triggered();
     void on_actionAbout_Qt_triggered();
     void gohome();
     void zoomin();
