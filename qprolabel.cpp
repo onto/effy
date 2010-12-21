@@ -17,9 +17,8 @@
 
 #include "qprolabel.h"
 
-QProLabel::QProLabel(QWidget *parent, int i) :
+QProLabel::QProLabel(QWidget *parent) :
     QLabel(parent) {
-    id = i;
 }
 
 void QProLabel::mousePressEvent(QMouseEvent *ev) {
@@ -31,12 +30,15 @@ void QProLabel::mousePressEvent(QMouseEvent *ev) {
     }
 }
 
-void QProLabel::setUnHighlight() {
+void QProLabel::setHighlight(bool hl) {
 
-    setStyleSheet("");
+    if (hl)
+        setStyleSheet("background-color: rgb(255,255,255);");
+    else
+        setStyleSheet("");
 }
 
-void QProLabel::setHighlight() {
+void QProLabel::setId(int i) {
 
-    setStyleSheet("background-color: rgb(255,255,255);");
+    id = i;
 }

@@ -26,6 +26,8 @@ Aboutwindow::Aboutwindow(QWidget *parent) :
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
     this->setWindowIcon(QIcon("./icons/icon.png"));
 
+    this->setWindowTitle("About Effy");
+
     ui->label->setPixmap(QPixmap("./icons/icon.png").scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     ui->label_4->setText(" effy");
 }
@@ -33,6 +35,20 @@ Aboutwindow::Aboutwindow(QWidget *parent) :
 Aboutwindow::~Aboutwindow() {
 
     delete ui;
+}
+
+void Aboutwindow::keyPressEvent(QKeyEvent *event) {
+
+    if (event->modifiers() & Qt::ControlModifier) {
+
+        switch (event->key()) {
+
+        case (Qt::Key_Q) : {
+            this->close();
+            break;
+        }
+        }
+    }
 }
 
 void Aboutwindow::on_pushButton_clicked() {

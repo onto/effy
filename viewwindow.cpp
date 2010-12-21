@@ -299,7 +299,7 @@ void ViewWindow::zoom_in() {
             scale += 25;
         }
     }
-    ui->label->setPixmap(image->scaledToWidth(qRound(image->width() * (scale)/100),Qt::SmoothTransformation));
+    ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
     Update();
 }
 
@@ -316,7 +316,7 @@ void ViewWindow::zoom_out() {
             scale -= 5;
         }
     }
-    ui->label->setPixmap(image->scaledToWidth(qRound(image->width() * (scale)/100),Qt::SmoothTransformation));
+    ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
     Update();
 }
 
@@ -329,9 +329,9 @@ void ViewWindow::zoom_original() {
 
 void ViewWindow::zoom_fit() {
 
-    scale = trunc(qMin((float(ui->scrollArea->geometry().width()) / float(image->width())),(float(ui->scrollArea->geometry().height()) / float(image->height()))) * 100);
+    scale = trunc(qMin((float(ui->scrollArea->geometry().width()) / float(image->width())),(float(ui->scrollArea->geometry().height()) / float(image->height()))) * 100) - 1;
 
-    ui->label->setPixmap(image->scaledToWidth(qRound(image->width() * (scale)/100),Qt::SmoothTransformation));
+    ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
     Update();
 }
 

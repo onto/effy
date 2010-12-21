@@ -39,16 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
     SetToolBarConf();
 
     imagescaling = new QFutureWatcher<QImage>(this);
-    connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(resized_image(int)));
+    connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(add_preview(int)));
 }
 
 MainWindow::~MainWindow() {
 
     qDeleteAll(toolbarbuttons);
-    qDeleteAll(labels);
-    qDeleteAll(namelabels);
-    qDeleteAll(previewlayouts);
-    delete pathlabel;
+    delete progressbar;
     delete model;
     delete ui;
 }
@@ -77,6 +74,11 @@ void MainWindow::resizeEvent(QResizeEvent *e) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *) {
+
+    if (imagescaling->isRunning()) {
+        imagescaling->cancel();
+        imagescaling->waitForFinished();
+    }
 
     settings = new QSettings("effy","effy");
     settings->setValue("window_size",this->saveGeometry());
@@ -115,22 +117,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 void MainWindow::SetTreeConf() {
 
-    //set tree model and
-    model = new QDirModel;
+    QString rootfolder = settings->value("root_folder").toString();
+
+    //set tree model
+    model = new QFileSystemModel();
     model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-    ui->treeView->setModel(model);
+    model->setRootPath(rootfolder);
 
-    QString path;
-
-    path = settings->value("root_folder").toString();
-
-    if (path == "/") {
-        path = "";
-    } else {
-        path += "/..";
-    }
-
-    ui->treeView->setRootIndex(model->index(path));
+    ui->treeView->setModel(model);    
+    ui->treeView->setRootIndex(model->index(rootfolder));
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
@@ -196,13 +191,19 @@ void MainWindow::SetWidgetsConf() {
 
     this->setWindowTitle("Effy");
 
-    pathlabel = new QLabel("");
-    ui->statusBar->addWidget(pathlabel);
-
     this->restoreGeometry(settings->value("window_size").toByteArray());
     ui->splitter->restoreState(settings->value("splitter_state").toByteArray());
 
     previewsize = settings->value("preview_size").toInt();
+
+    scrollarea = new QPreviewScrollArea();
+    scrollarea->setPreviewSize(previewsize);
+    ui->verticalLayout->addWidget(scrollarea);
+    connect(scrollarea,SIGNAL(dbl_clicked(int)),this,SLOT(open_photo(int)));
+
+    progressbar = new QProgressBar();
+    ui->statusBar->addWidget(progressbar);
+    progressbar->setFixedWidth(100);
 
     //connect with resize event
     connect(ui->splitter,SIGNAL(splitterMoved(int,int)),this,SLOT(resize()));
@@ -221,7 +222,7 @@ void MainWindow::OpenDir(QString path) {
 
     contentlist = dir.entryInfoList(settings->value("image_formats").toStringList(),QDir::Files);
 
-    pathlabel->setText(path);
+    this->setWindowTitle("Effy - "+path);
     settings->setValue("last_folder",path);
     currentpath = path;
 
@@ -230,7 +231,7 @@ void MainWindow::OpenDir(QString path) {
 
 void MainWindow::on_treeView_activated(QModelIndex index){
 
-    QString path = qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index);
+    QString path = qobject_cast<QFileSystemModel*>(ui->treeView->model())->filePath(index);
 
     if (currentpath != path) {
         this->OpenDir(path);
@@ -245,48 +246,23 @@ void MainWindow::View() {
         imagescaling->waitForFinished();
     }
 
-    //clear labels
-    qDeleteAll(labels);
-    labels.clear();
+    //update area
+    scrollarea->clear();
+    scrollarea->setPreviewSize(previewsize);
+    scrollarea->update();
 
-    qDeleteAll(previewlayouts);
-    previewlayouts.clear();
+    //update progressbar
+    progressbar->reset();
+    progressbar->setMinimum(0);
+    progressbar->setMaximum(contentlist.count() - 1);
 
-    qDeleteAll(namelabels);
-    namelabels.clear();
-
-    Update();
 
     QStringList files;
-    int q = 0;
 
+    //make stringlist with paths of files
     foreach (QFileInfo file,contentlist) {
 
         files.append(file.filePath());
-
-        //make prewiev label, connect with clicked slots
-        QProLabel * imagelabel = new QProLabel(0,q);
-        connect(imagelabel,SIGNAL(dbl_clicked(int)),this,SLOT(label_dbl_clicked(int)));
-        connect(imagelabel,SIGNAL(clicked(int)),this,SLOT(label_clicked(int)));
-
-        imagelabel->setFixedSize(settings->value("preview_size").toInt(),settings->value("preview_size").toInt());
-        imagelabel->setAlignment(Qt::AlignCenter);
-
-        QVBoxLayout * layout = new QVBoxLayout();        
-
-        QLabel * namelabel = new QLabel(file.fileName());
-
-        namelabel->setFixedWidth(settings->value("preview_size").toInt());
-
-        layout->addWidget(imagelabel);
-        layout->addWidget(namelabel);
-
-        ui->gridLayout->addLayout(layout,qRound(q/columncount),q%columncount);
-
-        labels.append(imagelabel);
-        namelabels.append(namelabel);
-        previewlayouts.append(layout);
-        q++;
     }
 
     //resize in thread
@@ -299,36 +275,7 @@ void MainWindow::on_actionQuit_triggered() {
     this->close();
 }
 
-void MainWindow::Update() {
-
-    //update some settings
-    columncount = ui->scrollArea->width()/(settings->value("preview_size").toInt() + 2 * ui->gridLayout->horizontalSpacing());
-
-    if (columncount == 0) {
-        columncount = 1;
-    }
-
-    if (contentlist.size() % columncount == 0) {
-        rowcount = contentlist.size() / columncount;
-    } else {
-        rowcount = contentlist.size() / columncount + 1;
-    }
-}
-
-void MainWindow::label_dbl_clicked(int id) {
-
-    OpenPhoto(id);
-}
-
-void MainWindow::label_clicked(int id) {
-
-    for (int i = 0; i < labels.size(); i++) {
-        labels[i]->setUnHighlight();
-    }
-    labels[id]->setHighlight();
-}
-
-void MainWindow::OpenPhoto(int id) {
+void MainWindow::open_photo(int id) {
 
     viewwindow = new ViewWindow(contentlist,id);
     viewwindow->show();
@@ -337,20 +284,7 @@ void MainWindow::OpenPhoto(int id) {
 void MainWindow::resize() {
 
     //on resize event
-    Update();
-
-    qDeleteAll(previewlayouts);
-    previewlayouts.clear();
-
-    for (int i = 0; i < labels.size(); i++) {
-        QVBoxLayout * layout = new QVBoxLayout();
-
-        layout->addWidget(labels[i]);
-        layout->addWidget(namelabels[i]);
-
-        previewlayouts.append(layout);
-        ui->gridLayout->addLayout(layout,qRound(i/columncount),i%columncount);
-    }
+    scrollarea->update();
 }
 
 void MainWindow::zoomin()
@@ -359,7 +293,7 @@ void MainWindow::zoomin()
     size = settings->value("preview_size").toInt();
     step = settings->value("preview_step").toInt();
 
-    if ( size + step < ui->scrollArea->size().width()) {
+    if ( size + step < scrollarea->size().width()) {
          settings->setValue("preview_size", size + step);
     }
     View();
@@ -395,14 +329,10 @@ void MainWindow::gohome() {
     ui->treeView->scrollTo(model->index(settings->value("root_folder").toString()));
 }
 
-void MainWindow::resized_image(int q) {
+void MainWindow::add_preview(int q) {
 
-    ShowPreview(q);
-}
-
-void MainWindow::ShowPreview(int q) {
-
-    labels[q]->setPixmap(QPixmap::fromImage(imagescaling->resultAt(q)));
+    scrollarea->addImage(q,QPixmap::fromImage(imagescaling->resultAt(q)),contentlist.at(q).fileName());
+    progressbar->setValue(progressbar->value() + 1);
 }
 
 QImage MainWindow::Scaled(const QString &file) {

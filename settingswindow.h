@@ -37,6 +37,9 @@ private:
     Ui::SettingsWindow *ui;
     QSettings * settings;
 
+    void closeEvent(QCloseEvent *);
+    void keyPressEvent(QKeyEvent *);
+
 private slots:
 
     void on_radioButton_3_toggled(bool checked);
@@ -53,11 +56,6 @@ private slots:
 
 signals:
     void close_window();
-
-protected:
-    void closeEvent(QCloseEvent *);
-    void keyPressEvent(QKeyEvent *);
-
 };
 
 #endif // SETTINGSWINDOW_H

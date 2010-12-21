@@ -15,29 +15,39 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef ABOUTWINDOW_H
-#define ABOUTWINDOW_H
+#ifndef QPREVIEWSCROLLAREA_H
+#define QPREVIEWSCROLLAREA_H
 
 #include <QtGui>
+#include <qprolabel.h>
 
-namespace Ui {
-    class Aboutwindow;
-}
-
-class Aboutwindow : public QWidget
+class QPreviewScrollArea : public QScrollArea
 {
     Q_OBJECT
-
 public:
-    explicit Aboutwindow(QWidget *parent = 0);
-    ~Aboutwindow();
+    QPreviewScrollArea();
+    ~QPreviewScrollArea();
+
+    void clear();
+    void addImage(int id, QPixmap image,QString text);
+    void setPreviewSize(int size);
+    void update();
 
 private:
-    Ui::Aboutwindow *ui;
-    void keyPressEvent(QKeyEvent *event);
+    int colcount;
+    int previewsize;
+    QList<QProLabel *> imagelabels;
+    QList<QLabel *> textlabels;
+    QList<QVBoxLayout *> layouts;
+    QGridLayout * gridlayout;
+    QWidget * scrollareawidget;
+
+signals:    
+    void dbl_clicked(int);
 
 private slots:
-    void on_pushButton_clicked();
+    void highlight(int id);
+
 };
 
-#endif // ABOUTWINDOW_H
+#endif // QPREVIEWSCROLLAREA_H

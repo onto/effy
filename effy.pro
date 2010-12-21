@@ -13,13 +13,15 @@ SOURCES += main.cpp\
     viewwindow.cpp \
     settingswindow.cpp \
     qprolabel.cpp \
-    aboutwindow.cpp
+    aboutwindow.cpp \
+    qpreviewscrollarea.cpp
 
 HEADERS  += mainwindow.h \
     viewwindow.h \
     settingswindow.h \
     qprolabel.h \
-    aboutwindow.h
+    aboutwindow.h \
+    qpreviewscrollarea.h
 
 FORMS    += mainwindow.ui \
     viewwindow.ui \

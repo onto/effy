@@ -22,7 +22,7 @@
 #include "viewwindow.h"
 #include "settingswindow.h"
 #include "aboutwindow.h"
-#include <qprolabel.h>
+#include <qpreviewscrollarea.h>
 
 #ifndef QT_NO_CONCURRENT
 
@@ -42,32 +42,25 @@ protected:
 
 private:
     QFileInfoList contentlist;
-    int columncount;
-    int rowcount;
     QString currentpath;
     ViewWindow * viewwindow;
     SettingsWindow * settingswindow;
     Aboutwindow * aboutwindow;
-    QList<QProLabel *> labels;
-    QList<QLabel *> namelabels;
-    QList<QVBoxLayout *> previewlayouts;
+    QPreviewScrollArea * scrollarea;
     QFutureWatcher<QImage> * imagescaling;
     static int previewsize;
     Ui::MainWindow *ui;
     QList<QPushButton *> toolbarbuttons;
-    QLabel * pathlabel;
-    QDirModel * model;
+    QProgressBar * progressbar;
+    QFileSystemModel * model;
 
     void SetWidgetsConf();
     void SetTreeConf();
     void SetToolBarConf();
     void SaveSettings();
-    void OpenPhoto(int id);
     void OpenDir(QString path);
     void View();
-    void ShowPreview(int id);
     static QImage Scaled(const QString &file);
-    void Update();
 
 private slots:
     void on_actionAbout_Effy_triggered();
@@ -78,19 +71,17 @@ private slots:
     void view_settings();
     void on_actionQuit_triggered();
     void on_treeView_activated(QModelIndex index);
-    void resized_image(int q);
-    void label_dbl_clicked(int id);
-    void label_clicked(int id);
     void resize();
     void update_settings();
+    void open_photo(int id);
+    void add_preview(int id);
 
-signals:
-    void widget_resize();
-
-protected:
     void resizeEvent (QResizeEvent * event );
     void closeEvent(QCloseEvent *);
     void keyPressEvent(QKeyEvent * event);
+
+signals:
+    void widget_resize();
 };
 
 #endif // QT_NO_CONCURRENT

@@ -24,9 +24,9 @@ class QProLabel : public QLabel
 {
     Q_OBJECT
 public:
-    explicit QProLabel(QWidget *parent, int id);
-    void setUnHighlight();
-    void setHighlight();
+    explicit QProLabel(QWidget *parent = 0);
+    void setHighlight(bool);
+    void setId(int);
 
 private:
     int id;
@@ -37,7 +37,6 @@ signals:
     void clicked(int);
 
 protected:
-    //void mouseReleaseEvent(QMouseEvent *ev);
     void mousePressEvent(QMouseEvent *ev);
 
 };
