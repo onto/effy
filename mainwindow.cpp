@@ -226,6 +226,8 @@ void MainWindow::OpenDir(QString path) {
     settings->setValue("last_folder",path);
     currentpath = path;
 
+    ui->treeView->scrollTo(model->index(path));
+
     View();
 }
 

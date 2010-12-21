@@ -58,9 +58,11 @@ private:
     void SetTreeConf();
     void SetToolBarConf();
     void SaveSettings();
-    void OpenDir(QString path);
     void View();
     static QImage Scaled(const QString &file);
+
+public:
+    void OpenDir(QString path);
 
 private slots:
     void on_actionAbout_Effy_triggered();

@@ -23,6 +23,11 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
+
+    if (QString(argv[1]) == "-d") {
+        w.OpenDir(QString(argv[2]));
+    }
+
     return a.exec();
 
 }

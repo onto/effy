@@ -329,9 +329,9 @@ void ViewWindow::zoom_original() {
 
 void ViewWindow::zoom_fit() {
 
-    scale = trunc(qMin((float(ui->scrollArea->geometry().width()) / float(image->width())),(float(ui->scrollArea->geometry().height()) / float(image->height()))) * 100) - 1;
+    scale = trunc(qMin((float(ui->scrollArea->geometry().width()) / float(image->width())),(float(ui->scrollArea->geometry().height()) / float(image->height()))) * 100);
 
-    ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
+    ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100 - 1),Qt::SmoothTransformation));
     Update();
 }
 
