@@ -67,10 +67,14 @@ void QPreviewScrollArea::addImage(int id, QPixmap image,QString text) {
     label->setFixedWidth(previewsize+8);
     label->setFixedHeight(image.height()+8);
     label->setAlignment(Qt::AlignCenter);
+
     connect(label,SIGNAL(dbl_clicked(int)),this,SIGNAL(dbl_clicked(int)));
     connect(label,SIGNAL(clicked(int)),this,SLOT(highlight(int)));
 
-    QLabel * tlabel = new QLabel(text);
+    QLabel * tlabel = new QLabel();
+    QFontMetrics metr(tlabel->font());
+    text = metr.elidedText(text,Qt::ElideMiddle,previewsize);
+    tlabel->setText(text);
     textlabels.insert(id,tlabel);
     tlabel->setFixedWidth(previewsize+8);
 
@@ -97,10 +101,6 @@ void QPreviewScrollArea::update() {
     for (int i = 0; i < imagelabels.size(); i++) {
 
         QVBoxLayout * layout = new QVBoxLayout();
-
-        imagelabels.at(i)->setFixedWidth(previewsize+8);
-        imagelabels.at(i)->setFixedHeight(imagelabels.at(i)->height()+8);
-        textlabels.at(i)->setFixedWidth(previewsize+8);
 
         layout->addWidget(imagelabels.at(i));
         layout->addWidget(textlabels.at(i));

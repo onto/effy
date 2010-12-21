@@ -240,6 +240,8 @@ void MainWindow::on_treeView_activated(QModelIndex index){
 
 void MainWindow::View() {
 
+    previewsize = settings->value("preview_size").toInt();
+
     //stop resize threads
     if (imagescaling->isRunning()) {
         imagescaling->cancel();
@@ -266,7 +268,6 @@ void MainWindow::View() {
     }
 
     //resize in thread
-    previewsize = settings->value("preview_size").toInt();
     imagescaling->setFuture(QtConcurrent::mapped(files, &MainWindow::Scaled));
 }
 
