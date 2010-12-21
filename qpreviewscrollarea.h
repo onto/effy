@@ -40,6 +40,8 @@ private:
     QList<QLabel *> textlabels;
     QList<QVBoxLayout *> layouts;
     QGridLayout * gridlayout;
+    QVBoxLayout * vboxlayout;
+    QSpacerItem * spacer;
     QWidget * scrollareawidget;
 
 signals:    

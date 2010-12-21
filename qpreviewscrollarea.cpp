@@ -26,10 +26,16 @@ QPreviewScrollArea::QPreviewScrollArea() :
     gridlayout = new QGridLayout();
     gridlayout->setSpacing(4);
 
+    vboxlayout = new QVBoxLayout();
+    vboxlayout->addLayout(gridlayout);
+
+    spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    vboxlayout->addItem(spacer);
+
     scrollareawidget = new QWidget();
     this->setWidget(scrollareawidget);
 
-    scrollareawidget->setLayout(gridlayout);
+    scrollareawidget->setLayout(vboxlayout);
 }
 
 QPreviewScrollArea::~QPreviewScrollArea() {
