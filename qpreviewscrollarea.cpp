@@ -79,8 +79,8 @@ void QPreviewScrollArea::addImage(int id, QPixmap image,QString text) {
     layouts.insert(id,layout);
     gridlayout->addLayout(layout,id/colcount,id%colcount,Qt::AlignBottom);
 
-    layouts.at(id)->insertWidget(0,label);
-    layouts.at(id)->insertWidget(1,tlabel);
+    layout->insertWidget(0,label);
+    layout->insertWidget(1,tlabel);
 }
 
 void QPreviewScrollArea::setPreviewSize(int size) {
