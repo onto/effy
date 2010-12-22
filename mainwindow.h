@@ -52,17 +52,16 @@ private:
     Ui::MainWindow *ui;
     QList<QPushButton *> toolbarbuttons;
     QProgressBar * progressbar;
-    QFileSystemModel * model;
+    QDirModel * model;
 
-    void SetWidgetsConf();
-    void SetTreeConf();
-    void SetToolBarConf();
-    void SaveSettings();
-    void View();
-    static QImage Scaled(const QString &file);
+    void setWidgetsConf();
+    void setTreeConf();
+    void setToolBarConf();
+    void view();
+    static QImage scaled(const QString &file);
 
 public:
-    void OpenDir(QString path);
+    void openDir(QString path);
 
 private slots:
     void on_actionAbout_Effy_triggered();

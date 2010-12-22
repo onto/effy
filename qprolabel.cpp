@@ -17,8 +17,8 @@
 
 #include "qprolabel.h"
 
-QProLabel::QProLabel(QWidget *parent) :
-    QLabel(parent) {
+QProLabel::QProLabel(QWidget *parent) : QLabel(parent) {
+
 }
 
 void QProLabel::mousePressEvent(QMouseEvent *ev) {

@@ -18,10 +18,8 @@
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
 
-SettingsWindow::SettingsWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::SettingsWindow)
-{
+SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow) {
+
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
 

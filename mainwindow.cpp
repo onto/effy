@@ -22,10 +22,8 @@
 
 int MainWindow::previewsize = 1;
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+
     ui->setupUi(this);
 
     this->setWindowIcon(QIcon("./icons/icon.png"));
@@ -34,9 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
     settings = new QSettings("effy","effy");
 
     //configure tree, toolbar, widgets
-    SetWidgetsConf();
-    SetTreeConf();
-    SetToolBarConf();
+    setWidgetsConf();
+    setTreeConf();
+    setToolBarConf();
 
     imagescaling = new QFutureWatcher<QImage>(this);
     connect(imagescaling, SIGNAL(resultReadyAt(int)),this,SLOT(add_preview(int)));
@@ -74,12 +72,7 @@ void MainWindow::resizeEvent(QResizeEvent *e) {
 }
 
 void MainWindow::closeEvent(QCloseEvent *) {
-
-    if (imagescaling->isRunning()) {
-        imagescaling->cancel();
-        imagescaling->waitForFinished();
-    }
-
+    //save geometry
     settings = new QSettings("effy","effy");
     settings->setValue("window_size",this->saveGeometry());
     settings->setValue("splitter_state",ui->splitter->saveState());
@@ -115,14 +108,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void MainWindow::SetTreeConf() {
+void MainWindow::setTreeConf() {
 
     QString rootfolder = settings->value("root_folder").toString();
 
     //set tree model
-    model = new QFileSystemModel();
+    model = new QDirModel();
     model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-    model->setRootPath(rootfolder);
+    //model->setRootPath(rootfolder);
 
     ui->treeView->setModel(model);    
     ui->treeView->setRootIndex(model->index(rootfolder));
@@ -139,7 +132,7 @@ void MainWindow::SetTreeConf() {
     currentpath = "";
 }
 
-void MainWindow::SetToolBarConf() {
+void MainWindow::setToolBarConf() {
 
     ui->toolBar->clear();
     qDeleteAll(toolbarbuttons);
@@ -187,17 +180,14 @@ void MainWindow::SetToolBarConf() {
     }
 }
 
-void MainWindow::SetWidgetsConf() {
+void MainWindow::setWidgetsConf() {
 
     this->setWindowTitle("Effy");
 
     this->restoreGeometry(settings->value("window_size").toByteArray());
     ui->splitter->restoreState(settings->value("splitter_state").toByteArray());
 
-    previewsize = settings->value("preview_size").toInt();
-
     scrollarea = new QPreviewScrollArea();
-    scrollarea->setPreviewSize(previewsize);
     ui->verticalLayout->addWidget(scrollarea);
     connect(scrollarea,SIGNAL(dbl_clicked(int)),this,SLOT(open_photo(int)));
 
@@ -211,11 +201,7 @@ void MainWindow::SetWidgetsConf() {
 
 }
 
-void MainWindow::SaveSettings() {
-
-}
-
-void MainWindow::OpenDir(QString path) {
+void MainWindow::openDir(QString path) {
 
     //open dir, save name of files in dir
     QDir dir(path);
@@ -228,19 +214,19 @@ void MainWindow::OpenDir(QString path) {
 
     ui->treeView->scrollTo(model->index(path));
 
-    View();
+    view();
 }
 
 void MainWindow::on_treeView_activated(QModelIndex index){
 
-    QString path = qobject_cast<QFileSystemModel*>(ui->treeView->model())->filePath(index);
+    QString path = qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index);
 
     if (currentpath != path) {
-        this->OpenDir(path);
+        this->openDir(path);
     }
 }
 
-void MainWindow::View() {
+void MainWindow::view() {
 
     previewsize = settings->value("preview_size").toInt();
 
@@ -270,7 +256,7 @@ void MainWindow::View() {
     }
 
     //resize in thread
-    imagescaling->setFuture(QtConcurrent::mapped(files, &MainWindow::Scaled));
+    imagescaling->setFuture(QtConcurrent::mapped(files, &MainWindow::scaled));
 }
 
 void MainWindow::on_actionQuit_triggered() {
@@ -299,7 +285,7 @@ void MainWindow::zoomin()
     if ( size + step < scrollarea->size().width()) {
          settings->setValue("preview_size", size + step);
     }
-    View();
+    view();
 }
 
 void MainWindow::zoomout()
@@ -311,7 +297,7 @@ void MainWindow::zoomout()
     if ( size - step > step ) {
         settings->setValue("preview_size",size - step);
     }
-    View();
+    view();
 }
 
 void MainWindow::view_settings() {
@@ -323,8 +309,8 @@ void MainWindow::view_settings() {
 
 void MainWindow::update_settings() {
 
-    SetTreeConf();
-    SetToolBarConf();
+    setTreeConf();
+    setToolBarConf();
 }
 
 void MainWindow::gohome() {
@@ -338,7 +324,7 @@ void MainWindow::add_preview(int q) {
     progressbar->setValue(progressbar->value() + 1);
 }
 
-QImage MainWindow::Scaled(const QString &file) {
+QImage MainWindow::scaled(const QString &file) {
 
     QImage image(file);
 

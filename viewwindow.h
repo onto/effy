@@ -45,14 +45,13 @@ private:
     int scale;
     bool fit;
 
-    void InitToolBar();
-    void OpenPhoto();
-    void Update();
+    void initToolBar();
+    void openPhoto();
+    void update();
 
     void resizeEvent(QResizeEvent *);
     void keyPressEvent(QKeyEvent *event);
     void wheelEvent(QWheelEvent *event);
-
 
 private slots:
     void on_actionAbout_Effy_triggered();

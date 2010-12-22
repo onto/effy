@@ -18,10 +18,8 @@
 #include "aboutwindow.h"
 #include "ui_aboutwindow.h"
 
-Aboutwindow::Aboutwindow(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::Aboutwindow)
-{
+Aboutwindow::Aboutwindow(QWidget *parent) : QWidget(parent), ui(new Ui::Aboutwindow) {
+
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
     this->setWindowIcon(QIcon("./icons/icon.png"));

@@ -39,9 +39,9 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
     this->restoreGeometry(settings->value("viewwindow_size").toByteArray());
     ui->scrollArea->setGeometry(settings->value("photoarea_size").toRect());
 
-    InitToolBar();
+    initToolBar();
 
-    OpenPhoto();
+    openPhoto();
     zoom_fit();
 }
 
@@ -133,18 +133,18 @@ void ViewWindow::wheelEvent(QWheelEvent *event) {
 
 }
 
-void ViewWindow::OpenPhoto() {
+void ViewWindow::openPhoto() {
 
     image = new QPixmap(contentlist.at(photoid).filePath());
 }
 
-void ViewWindow::Update() {
+void ViewWindow::update() {
 
     zoomlabel->setText(tr("Zoom: ")+QString::number(scale)+tr("%"));
     this->setWindowTitle(contentlist.at(photoid).fileName());
 }
 
-void ViewWindow::InitToolBar() {
+void ViewWindow::initToolBar() {
 
     ui->toolBar->setShown(settings->value("show_viewwindow_toolbar").toBool());
 
@@ -246,9 +246,9 @@ void ViewWindow::go_first() {
 
     if (photoid != 0) {
         photoid = 0;
-        OpenPhoto();
+        openPhoto();
         zoom_fit();
-        Update();
+        update();
     }
 }
 
@@ -257,9 +257,9 @@ void ViewWindow::go_previous() {
     photoid--;
 
     if (photoid >= 0) {
-        OpenPhoto();
+        openPhoto();
         zoom_fit();
-        Update();
+        update();
     } else {
         photoid = 0;
     }
@@ -270,9 +270,9 @@ void ViewWindow::go_next() {
     photoid++;
 
     if (photoid < contentlist.size()) {
-        OpenPhoto();
+        openPhoto();
         zoom_fit();
-        Update();
+        update();
     } else {
         photoid = contentlist.size() - 1;
     }
@@ -282,9 +282,9 @@ void ViewWindow::go_last() {
 
     if (photoid != contentlist.size() - 1) {
         photoid = contentlist.size() - 1;
-        OpenPhoto();
+        openPhoto();
         zoom_fit();
-        Update();
+        update();
     }
 }
 
@@ -300,7 +300,7 @@ void ViewWindow::zoom_in() {
         }
     }
     ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
-    Update();
+    update();
 }
 
 void ViewWindow::zoom_out() {
@@ -317,14 +317,14 @@ void ViewWindow::zoom_out() {
         }
     }
     ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
-    Update();
+    update();
 }
 
 void ViewWindow::zoom_original() {
 
     scale = 100;
     ui->label->setPixmap(*image);
-    Update();
+    update();
 }
 
 void ViewWindow::zoom_fit() {
@@ -332,7 +332,7 @@ void ViewWindow::zoom_fit() {
     scale = trunc(qMin((float(ui->scrollArea->geometry().width()) / float(image->width())),(float(ui->scrollArea->geometry().height()) / float(image->height()))) * 100);
 
     ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100 - 1),Qt::SmoothTransformation));
-    Update();
+    update();
 }
 
 void ViewWindow::rotate_left() {
@@ -343,7 +343,7 @@ void ViewWindow::rotate_left() {
     *image = image->transformed(transform);
 
     zoom_fit();
-    Update();
+    update();
 }
 
 void ViewWindow::rotate_right() {
@@ -354,7 +354,7 @@ void ViewWindow::rotate_right() {
     *image = image->transformed(transform);
 
     zoom_fit();
-    Update();
+    update();
 }
 
 void ViewWindow::flip_horizontal() {
@@ -362,7 +362,7 @@ void ViewWindow::flip_horizontal() {
     *image = image->fromImage(image->toImage().mirrored(true,false));
 
     zoom_fit();
-    Update();
+    update();
 }
 
 void ViewWindow::flip_vertical() {
@@ -370,7 +370,7 @@ void ViewWindow::flip_vertical() {
     *image = image->fromImage(image->toImage().mirrored(false,true));
 
     zoom_fit();
-    Update();
+    update();
 }
 
 void ViewWindow::on_actionAbout_Qt_triggered() {

@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     w.show();
 
     if (QString(argv[1]) == "-d") {
-        w.OpenDir(QString(argv[2]));
+        w.openDir(QString(argv[2]));
     }
 
     return a.exec();

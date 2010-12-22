@@ -17,8 +17,7 @@
 
 #include "qpreviewscrollarea.h"
 
-QPreviewScrollArea::QPreviewScrollArea() :
-    QScrollArea() {
+QPreviewScrollArea::QPreviewScrollArea() : QScrollArea() {
 
     this->setWidgetResizable(true);
     this->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
@@ -40,9 +39,7 @@ QPreviewScrollArea::QPreviewScrollArea() :
 
 QPreviewScrollArea::~QPreviewScrollArea() {
 
-    qDeleteAll(imagelabels);
-    qDeleteAll(textlabels);
-    qDeleteAll(layouts);
+    clear();
     delete gridlayout;
     delete scrollareawidget;
 }
