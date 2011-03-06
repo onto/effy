@@ -26,7 +26,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
 
-    this->setWindowIcon(QIcon("./icons/icon.png"));
+    this->setWindowIcon(QIcon("/usr/share/effy/icons/icon.png"));
 
     this->setWindowTitle("Settings");
 

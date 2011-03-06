@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->setupUi(this);
 
-    this->setWindowIcon(QIcon("./icons/icon.png"));
+    this->setWindowIcon(QIcon("/usr/share/effy/icons/icon.png"));
 
     //connect with settings
     settings = new QSettings("effy","effy");
@@ -139,7 +139,7 @@ void MainWindow::setToolBarConf() {
     ui->toolBar->setVisible(settings->value("show_mainwindow_toolbar").toBool());
 
     //settings button
-    QPushButton * settingsbutton = new QPushButton(QIcon::fromTheme("emblem-system",QIcon("./icons/emblem-system.png")),"");
+    QPushButton * settingsbutton = new QPushButton(QIcon::fromTheme("emblem-system",QIcon("/usr/share/effy/icons/emblem-system.png")),"");
     connect(settingsbutton,SIGNAL(clicked()),this,SLOT(view_settings()));
     ui->toolBar->addWidget(settingsbutton);
     toolbarbuttons.append(settingsbutton);
@@ -147,13 +147,13 @@ void MainWindow::setToolBarConf() {
     ui->toolBar->addSeparator();
 
     //zoom in button
-    QPushButton * zoominbutton = new QPushButton(QIcon::fromTheme("zoom-in",QIcon("./icons/zoom-in.png")),"");
+    QPushButton * zoominbutton = new QPushButton(QIcon::fromTheme("zoom-in",QIcon("/usr/share/effy/icons/zoom-in.png")),"");
     connect(zoominbutton,SIGNAL(clicked()),this,SLOT(zoomin()));
     ui->toolBar->addWidget(zoominbutton);
     toolbarbuttons.append(zoominbutton);
 
     //zoom out button
-    QPushButton * zoomoutbutton = new QPushButton(QIcon::fromTheme("zoom-out",QIcon("./icons/zoom-out.png")),"");
+    QPushButton * zoomoutbutton = new QPushButton(QIcon::fromTheme("zoom-out",QIcon("/usr/share/effy/icons/zoom-out.png")),"");
     connect(zoomoutbutton,SIGNAL(clicked()),this,SLOT(zoomout()));
     ui->toolBar->addWidget(zoomoutbutton);
     toolbarbuttons.append(zoomoutbutton);

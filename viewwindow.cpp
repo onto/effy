@@ -24,7 +24,7 @@ ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWin
 
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
-    this->setWindowIcon(QIcon("./icons/icon.png"));
+    this->setWindowIcon(QIcon("/usr/share/effy/icons/icon.png"));
 
     contentlist = content;
     photoid = id;
@@ -151,25 +151,25 @@ void ViewWindow::initToolBar() {
     ui->toolBar->setVisible(settings->value("show_viewwindow_toolbar").toBool());
 
     //go to first
-    QPushButton * first = new QPushButton(QIcon::fromTheme("go-first",QIcon("./icons/go-first.png")),"");
+    QPushButton * first = new QPushButton(QIcon::fromTheme("go-first",QIcon("/usr/share/effy/icons/go-first.png")),"");
     connect(first,SIGNAL(clicked()),this,SLOT(go_first()));
     ui->toolBar->addWidget(first);
     toolbarbuttons.append(first);
 
     //go to previous
-    QPushButton * previous = new QPushButton(QIcon::fromTheme("go-previous",QIcon("./icons/go-previous.png")),"");
+    QPushButton * previous = new QPushButton(QIcon::fromTheme("go-previous",QIcon("/usr/share/effy/icons/go-previous.png")),"");
     connect(previous,SIGNAL(clicked()),this,SLOT(go_previous()));
     ui->toolBar->addWidget(previous);
     toolbarbuttons.append(previous);
 
     //go to next
-    QPushButton * next = new QPushButton(QIcon::fromTheme("go-next",QIcon("./icons/go-next.png")),"");
+    QPushButton * next = new QPushButton(QIcon::fromTheme("go-next",QIcon("/usr/share/effy/icons/go-next.png")),"");
     connect(next,SIGNAL(clicked()),this,SLOT(go_next()));
     ui->toolBar->addWidget(next);
     toolbarbuttons.append(next);
 
     //go to last
-    QPushButton * last = new QPushButton(QIcon::fromTheme("go-last",QIcon("./icons/go-last.png")),"");
+    QPushButton * last = new QPushButton(QIcon::fromTheme("go-last",QIcon("/usr/share/effy/icons/go-last.png")),"");
     connect(last,SIGNAL(clicked()),this,SLOT(go_last()));
     ui->toolBar->addWidget(last);
     toolbarbuttons.append(last);
@@ -177,25 +177,25 @@ void ViewWindow::initToolBar() {
     ui->toolBar->addSeparator();
 
     //zoom in
-    QPushButton * zoomin = new QPushButton(QIcon::fromTheme("zoom-in",QIcon("./icons/zoom-in.png")),"");
+    QPushButton * zoomin = new QPushButton(QIcon::fromTheme("zoom-in",QIcon("/usr/share/effy/icons/zoom-in.png")),"");
     connect(zoomin,SIGNAL(clicked()),this,SLOT(zoom_in()));
     ui->toolBar->addWidget(zoomin);
     toolbarbuttons.append(zoomin);
 
     //zoom out
-    QPushButton * zoomout = new QPushButton(QIcon::fromTheme("zoom-out",QIcon("./icons/zoom-out.png")),"");
+    QPushButton * zoomout = new QPushButton(QIcon::fromTheme("zoom-out",QIcon("/usr/share/effy/icons/zoom-out.png")),"");
     connect(zoomout,SIGNAL(clicked()),this,SLOT(zoom_out()));
     ui->toolBar->addWidget(zoomout);
     toolbarbuttons.append(zoomout);
 
     //zoom original
-    QPushButton * zoomoriginal = new QPushButton(QIcon::fromTheme("zoom-original",QIcon("./icons/zoom-original.png")),"");
+    QPushButton * zoomoriginal = new QPushButton(QIcon::fromTheme("zoom-original",QIcon("/usr/share/effy/icons/zoom-original.png")),"");
     connect(zoomoriginal,SIGNAL(clicked()),this,SLOT(zoom_original()));
     ui->toolBar->addWidget(zoomoriginal);
     toolbarbuttons.append(zoomoriginal);
 
     //zoom fit
-    QPushButton * zoomfit = new QPushButton(QIcon::fromTheme("zoom-best-fit",QIcon("./icons/zoom-best-fit.png")),"");
+    QPushButton * zoomfit = new QPushButton(QIcon::fromTheme("zoom-best-fit",QIcon("/usr/share/effy/icons/zoom-best-fit.png")),"");
     connect(zoomfit,SIGNAL(clicked()),this,SLOT(zoom_fit()));
     ui->toolBar->addWidget(zoomfit);
     toolbarbuttons.append(zoomfit);
@@ -203,25 +203,25 @@ void ViewWindow::initToolBar() {
     ui->toolBar->addSeparator();
 
     //rotate-right
-    QPushButton * rotateright = new QPushButton(QIcon::fromTheme("rotate-right",QIcon("./icons/rotate-right.png")),"");
+    QPushButton * rotateright = new QPushButton(QIcon::fromTheme("rotate-right",QIcon("/usr/share/effy/icons/rotate-right.png")),"");
     connect(rotateright,SIGNAL(clicked()),this,SLOT(rotate_right()));
     ui->toolBar->addWidget(rotateright);
     toolbarbuttons.append(rotateright);
 
     //rotate-left
-    QPushButton * rotateleft = new QPushButton(QIcon::fromTheme("rotate-left",QIcon("./icons/rotate-left.png")),"");
+    QPushButton * rotateleft = new QPushButton(QIcon::fromTheme("rotate-left",QIcon("/usr/share/effy/icons/rotate-left.png")),"");
     connect(rotateleft,SIGNAL(clicked()),this,SLOT(rotate_left()));
     ui->toolBar->addWidget(rotateleft);
     toolbarbuttons.append(rotateleft);
 
     //flip-horizontal
-    QPushButton * fliphorizontal = new QPushButton(QIcon::fromTheme("flip-horizontal",QIcon("./icons/flip-horizontal.png")),"");
+    QPushButton * fliphorizontal = new QPushButton(QIcon::fromTheme("flip-horizontal",QIcon("/usr/share/effy/icons/flip-horizontal.png")),"");
     connect(fliphorizontal,SIGNAL(clicked()),this,SLOT(flip_horizontal()));
     ui->toolBar->addWidget(fliphorizontal);
     toolbarbuttons.append(fliphorizontal);
 
     //flip-vertical
-    QPushButton * flipvertical = new QPushButton(QIcon::fromTheme("flip-vertical",QIcon("./icons/flip-vertical.png")),"");
+    QPushButton * flipvertical = new QPushButton(QIcon::fromTheme("flip-vertical",QIcon("/usr/share/effy/icons/flip-vertical.png")),"");
     connect(flipvertical,SIGNAL(clicked()),this,SLOT(flip_vertical()));
     ui->toolBar->addWidget(flipvertical);
     toolbarbuttons.append(flipvertical);

@@ -29,7 +29,6 @@ FORMS    += mainwindow.ui \
     aboutwindow.ui
 
 OTHER_FILES += \
-    Makefile \
     effy.conf \
     icons/zoom-out.png \
     icons/zoom-original.png \
@@ -47,3 +46,10 @@ OTHER_FILES += \
     icons/flip-horizontal.png \
     icons/emblem-system.png \
     icons/icon.png
+
+target.path = /usr/bin
+INSTALLS += target
+
+icons.path = /usr/share/effy/icons
+icons.files = icons/*.png
+INSTALLS += icons

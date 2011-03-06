@@ -26,11 +26,11 @@ Aboutwindow::Aboutwindow(QWidget *parent) : QWidget(parent), ui(new Ui::Aboutwin
 
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
-    this->setWindowIcon(QIcon("./icons/icon.png"));
+    this->setWindowIcon(QIcon("/usr/share/effy/icons/icon.png"));
 
     this->setWindowTitle("About Effy");
 
-    ui->label->setPixmap(QPixmap("./icons/icon.png").scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+    ui->label->setPixmap(QPixmap("/usr/share/effy/icons/icon.png").scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation));
     ui->label_4->setText("effy "+QString(settings.value("version").toString()));
 
 }
