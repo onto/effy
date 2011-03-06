@@ -36,6 +36,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     QSettings * settings;
+    QPreviewScrollArea * scrollarea;
 
 protected:
     void changeEvent(QEvent *e);
@@ -46,13 +47,12 @@ private:
     ViewWindow * viewwindow;
     SettingsWindow * settingswindow;
     Aboutwindow * aboutwindow;
-    QPreviewScrollArea * scrollarea;
     QFutureWatcher<QImage> * imagescaling;
     static int previewsize;
     Ui::MainWindow *ui;
     QList<QPushButton *> toolbarbuttons;
     QProgressBar * progressbar;
-    QDirModel * model;
+    QFileSystemModel * model;
 
     void setWidgetsConf();
     void setTreeConf();
@@ -66,7 +66,6 @@ public:
 private slots:
     void on_actionAbout_Effy_triggered();
     void on_actionAbout_Qt_triggered();
-    void gohome();
     void zoomin();
     void zoomout();
     void view_settings();

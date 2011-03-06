@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow() {
 
     qDeleteAll(toolbarbuttons);
+    delete scrollarea;
     delete progressbar;
     delete model;
     delete ui;
@@ -100,10 +101,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             zoomout();
             break;
         }
-        case (Qt::Key_H) : {
-            gohome();
-            break;
-        }
         }
     }
 }
@@ -111,22 +108,23 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 void MainWindow::setTreeConf() {
 
     QString rootfolder = settings->value("root_folder").toString();
+    QString lastfolder = settings->value("last_folder").toString();
 
     //set tree model
-    model = new QDirModel();
+    model = new QFileSystemModel();
     model->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-    //model->setRootPath(rootfolder);
+    model->setRootPath(rootfolder);
 
     ui->treeView->setModel(model);    
-    ui->treeView->setRootIndex(model->index(rootfolder));
+    //ui->treeView->setRootIndex(model->index(rootfolder));
     ui->treeView->setColumnHidden(1,true);
     ui->treeView->setColumnHidden(2,true);
     ui->treeView->setColumnHidden(3,true);
 
     if (settings->value("save_last_folder").toBool()) {
-        ui->treeView->scrollTo(model->index(settings->value("last_folder").toString()));
+        ui->treeView->scrollTo(model->index(lastfolder));
     } else {
-        ui->treeView->scrollTo(model->index(settings->value("root_folder").toString()));
+        ui->treeView->scrollTo(model->index(rootfolder));
     }
 
     currentpath = "";
@@ -138,18 +136,10 @@ void MainWindow::setToolBarConf() {
     qDeleteAll(toolbarbuttons);
     toolbarbuttons.clear();
 
-    ui->toolBar->setShown(settings->value("show_mainwindow_toolbar").toBool());
-
-    //go home button
-    QPushButton * gohomebutton = new QPushButton(QIcon("./icons/go-home.png"),"");
-    connect(gohomebutton,SIGNAL(clicked()),this,SLOT(gohome()));
-    ui->toolBar->addWidget(gohomebutton);
-    toolbarbuttons.append(gohomebutton);
-
-    ui->toolBar->addSeparator();
+    ui->toolBar->setVisible(settings->value("show_mainwindow_toolbar").toBool());
 
     //settings button
-    QPushButton * settingsbutton = new QPushButton(QIcon("./icons/emblem-system.png"),"");
+    QPushButton * settingsbutton = new QPushButton(QIcon::fromTheme("emblem-system",QIcon("./icons/emblem-system.png")),"");
     connect(settingsbutton,SIGNAL(clicked()),this,SLOT(view_settings()));
     ui->toolBar->addWidget(settingsbutton);
     toolbarbuttons.append(settingsbutton);
@@ -157,24 +147,23 @@ void MainWindow::setToolBarConf() {
     ui->toolBar->addSeparator();
 
     //zoom in button
-    QPushButton * zoominbutton = new QPushButton(QIcon("./icons/zoom-in.png"),"");
+    QPushButton * zoominbutton = new QPushButton(QIcon::fromTheme("zoom-in",QIcon("./icons/zoom-in.png")),"");
     connect(zoominbutton,SIGNAL(clicked()),this,SLOT(zoomin()));
     ui->toolBar->addWidget(zoominbutton);
     toolbarbuttons.append(zoominbutton);
 
     //zoom out button
-    QPushButton * zoomoutbutton = new QPushButton(QIcon("./icons/zoom-out.png"),"");
+    QPushButton * zoomoutbutton = new QPushButton(QIcon::fromTheme("zoom-out",QIcon("./icons/zoom-out.png")),"");
     connect(zoomoutbutton,SIGNAL(clicked()),this,SLOT(zoomout()));
     ui->toolBar->addWidget(zoomoutbutton);
     toolbarbuttons.append(zoomoutbutton);
 
-    for (int i = 0; i < toolbarbuttons.size(); i++) {
+    int size = settings->value("icon_size").toInt();
+    int toolbarbuttons_size = toolbarbuttons.size();
+
+    for (int i = 0; i < toolbarbuttons_size; i++) {
 
         toolbarbuttons.at(i)->setFlat(true);
-
-        int size;
-        size = settings->value("icon_size").toInt();
-
         toolbarbuttons.at(i)->setFixedSize(size+8,size+8);
         toolbarbuttons.at(i)->setIconSize(QSize(size,size));
     }
@@ -208,7 +197,7 @@ void MainWindow::openDir(QString path) {
 
     contentlist = dir.entryInfoList(settings->value("image_formats").toStringList(),QDir::Files);
 
-    this->setWindowTitle("Effy - "+path);
+    this->setWindowTitle(path+" - effy");
     settings->setValue("last_folder",path);
     currentpath = path;
 
@@ -219,7 +208,7 @@ void MainWindow::openDir(QString path) {
 
 void MainWindow::on_treeView_activated(QModelIndex index){
 
-    QString path = qobject_cast<QDirModel*>(ui->treeView->model())->filePath(index);
+    QString path = (qobject_cast<QFileSystemModel*>(ui->treeView->model()))->filePath(index);
 
     if (currentpath != path) {
         this->openDir(path);
@@ -278,26 +267,24 @@ void MainWindow::resize() {
 
 void MainWindow::zoomin()
 {
-    int size,step;
-    size = settings->value("preview_size").toInt();
-    step = settings->value("preview_step").toInt();
+    int size = settings->value("preview_size").toInt();
+    int step = settings->value("preview_step").toInt();
 
-    if ( size + step < scrollarea->size().width()) {
+    if ( size + step + scrollarea->borderSize() < scrollarea->size().width() ) {
          settings->setValue("preview_size", size + step);
+         view();
     }
-    view();
 }
 
 void MainWindow::zoomout()
 {
-    int size,step;
-    size = settings->value("preview_size").toInt();
-    step = settings->value("preview_step").toInt();
+    int size = settings->value("preview_size").toInt();
+    int step = settings->value("preview_step").toInt();
 
     if ( size - step > step ) {
         settings->setValue("preview_size",size - step);
+        view();
     }
-    view();
 }
 
 void MainWindow::view_settings() {
@@ -313,11 +300,6 @@ void MainWindow::update_settings() {
     setToolBarConf();
 }
 
-void MainWindow::gohome() {
-
-    ui->treeView->scrollTo(model->index(settings->value("root_folder").toString()));
-}
-
 void MainWindow::add_preview(int q) {
 
     scrollarea->addImage(q,QPixmap::fromImage(imagescaling->resultAt(q)),contentlist.at(q).fileName());
@@ -327,6 +309,8 @@ void MainWindow::add_preview(int q) {
 QImage MainWindow::scaled(const QString &file) {
 
     QImage image(file);
+
+    if ((image.width() < previewsize) && (image.height() < previewsize)) return image;
 
     if (image.width() > image.height()) {
         image = image.scaledToWidth(previewsize,Qt::SmoothTransformation);

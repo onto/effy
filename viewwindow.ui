@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>772</width>
-    <height>480</height>
+    <height>396</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,6 @@
     <property name="margin">
      <number>0</number>
     </property>
-    <property name="spacing">
-     <number>0</number>
-    </property>
     <item row="0" column="0">
      <widget class="QScrollArea" name="scrollArea">
       <property name="lineWidth">
@@ -29,41 +26,25 @@
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
       <widget class="QWidget" name="scrollAreaWidgetContents">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
          <width>770</width>
-         <height>422</height>
+         <height>336</height>
         </rect>
        </property>
-       <layout class="QGridLayout" name="gridLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout">
         <property name="margin">
          <number>0</number>
         </property>
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <property name="spacing">
-           <number>0</number>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string/>
           </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="lineWidth">
-             <number>0</number>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -89,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>772</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMain">

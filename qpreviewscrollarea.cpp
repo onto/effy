@@ -35,6 +35,8 @@ QPreviewScrollArea::QPreviewScrollArea() : QScrollArea() {
     this->setWidget(scrollareawidget);
 
     scrollareawidget->setLayout(vboxlayout);
+
+    border = 8;
 }
 
 QPreviewScrollArea::~QPreviewScrollArea() {
@@ -52,18 +54,17 @@ void QPreviewScrollArea::clear() {
    imagelabels.clear();
    textlabels.clear();
    layouts.clear();
-
 }
 
 void QPreviewScrollArea::addImage(int id, QPixmap image,QString text) {
 
     QProLabel * label = new QProLabel();
     label->setPixmap(image);
-    imagelabels.insert(id,label);
     label->setId(id);
-    label->setFixedWidth(previewsize+8);
-    label->setFixedHeight(image.height()+8);
+    label->setFixedWidth(previewsize+border);
+    label->setFixedHeight(image.height()+border);
     label->setAlignment(Qt::AlignCenter);
+    imagelabels.insert(id,label);
 
     connect(label,SIGNAL(dbl_clicked(int)),this,SIGNAL(dbl_clicked(int)));
     connect(label,SIGNAL(clicked(int)),this,SLOT(highlight(int)));
@@ -72,8 +73,9 @@ void QPreviewScrollArea::addImage(int id, QPixmap image,QString text) {
     QFontMetrics metr(tlabel->font());
     text = metr.elidedText(text,Qt::ElideMiddle,previewsize);
     tlabel->setText(text);
+    tlabel->setAlignment(Qt::AlignCenter);
+    tlabel->setFixedWidth(previewsize+border);
     textlabels.insert(id,tlabel);
-    tlabel->setFixedWidth(previewsize+8);
 
     QVBoxLayout * layout = new QVBoxLayout();
     layouts.insert(id,layout);
@@ -92,10 +94,11 @@ void QPreviewScrollArea::update() {
 
     qDeleteAll(layouts);
     layouts.clear();
+    colcount = trunc(this->width()/(previewsize+border*2));
 
-    colcount = trunc(this->width()/(previewsize+16));
+    int imagelabels_size = imagelabels.size();
 
-    for (int i = 0; i < imagelabels.size(); i++) {
+    for (int i = 0; i < imagelabels_size; i++) {
 
         QVBoxLayout * layout = new QVBoxLayout();
 
@@ -114,4 +117,9 @@ void QPreviewScrollArea::highlight(int id) {
         label->setHighlight(false);
     }
     imagelabels.at(id)->setHighlight(true);
+}
+
+int QPreviewScrollArea::borderSize() {
+
+    return border;
 }

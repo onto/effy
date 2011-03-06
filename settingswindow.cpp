@@ -17,8 +17,11 @@
 
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
+#include "mainwindow.h"
 
 SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow) {
+
+    //setAttribute(Qt::WA_DeleteOnClose);
 
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
@@ -35,7 +38,6 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
 
     ui->previewsizeSlider->setValue(settings->value("preview_size").toInt());
     ui->previewsizeEdit->setText(settings->value("preview_size").toString());
-
     ui->previewstepSlider->setValue(settings->value("preview_step").toInt());
     ui->previewstepEdit->setText(settings->value("preview_step").toString());
 

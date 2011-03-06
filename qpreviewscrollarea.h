@@ -32,10 +32,12 @@ public:
     void addImage(int id, QPixmap image,QString text);
     void setPreviewSize(int size);
     void update();
+    int  borderSize();
 
 private:
     int colcount;
     int previewsize;
+    int border;
     QList<QProLabel *> imagelabels;
     QList<QLabel *> textlabels;
     QList<QVBoxLayout *> layouts;

@@ -20,6 +20,10 @@
 
 Aboutwindow::Aboutwindow(QWidget *parent) : QWidget(parent), ui(new Ui::Aboutwindow) {
 
+    //setAttribute(Qt::WA_DeleteOnClose);
+
+    QSettings settings("effy","effy");
+
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
     this->setWindowIcon(QIcon("./icons/icon.png"));
@@ -27,7 +31,8 @@ Aboutwindow::Aboutwindow(QWidget *parent) : QWidget(parent), ui(new Ui::Aboutwin
     this->setWindowTitle("About Effy");
 
     ui->label->setPixmap(QPixmap("./icons/icon.png").scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation));
-    ui->label_4->setText(" effy");
+    ui->label_4->setText("effy "+QString(settings.value("version").toString()));
+
 }
 
 Aboutwindow::~Aboutwindow() {

@@ -20,6 +20,8 @@
 
 ViewWindow::ViewWindow(QFileInfoList content, int id, QWidget *parent): QMainWindow(parent), ui(new Ui::ViewWindow) {
 
+    //setAttribute(Qt::WA_DeleteOnClose);
+
     ui->setupUi(this);
     this->move(qApp->desktop()->availableGeometry(this).center()-rect().center());
     this->setWindowIcon(QIcon("./icons/icon.png"));
@@ -146,28 +148,28 @@ void ViewWindow::update() {
 
 void ViewWindow::initToolBar() {
 
-    ui->toolBar->setShown(settings->value("show_viewwindow_toolbar").toBool());
+    ui->toolBar->setVisible(settings->value("show_viewwindow_toolbar").toBool());
 
     //go to first
-    QPushButton * first = new QPushButton(QIcon("./icons/go-first.png"),"");
+    QPushButton * first = new QPushButton(QIcon::fromTheme("go-first",QIcon("./icons/go-first.png")),"");
     connect(first,SIGNAL(clicked()),this,SLOT(go_first()));
     ui->toolBar->addWidget(first);
     toolbarbuttons.append(first);
 
     //go to previous
-    QPushButton * previous = new QPushButton(QIcon("./icons/go-previous.png"),"");
+    QPushButton * previous = new QPushButton(QIcon::fromTheme("go-previous",QIcon("./icons/go-previous.png")),"");
     connect(previous,SIGNAL(clicked()),this,SLOT(go_previous()));
     ui->toolBar->addWidget(previous);
     toolbarbuttons.append(previous);
 
     //go to next
-    QPushButton * next = new QPushButton(QIcon("./icons/go-next.png"),"");
+    QPushButton * next = new QPushButton(QIcon::fromTheme("go-next",QIcon("./icons/go-next.png")),"");
     connect(next,SIGNAL(clicked()),this,SLOT(go_next()));
     ui->toolBar->addWidget(next);
     toolbarbuttons.append(next);
 
     //go to last
-    QPushButton * last = new QPushButton(QIcon("./icons/go-last.png"),"");
+    QPushButton * last = new QPushButton(QIcon::fromTheme("go-last",QIcon("./icons/go-last.png")),"");
     connect(last,SIGNAL(clicked()),this,SLOT(go_last()));
     ui->toolBar->addWidget(last);
     toolbarbuttons.append(last);
@@ -175,25 +177,25 @@ void ViewWindow::initToolBar() {
     ui->toolBar->addSeparator();
 
     //zoom in
-    QPushButton * zoomin = new QPushButton(QIcon("./icons/zoom-in.png"),"");
+    QPushButton * zoomin = new QPushButton(QIcon::fromTheme("zoom-in",QIcon("./icons/zoom-in.png")),"");
     connect(zoomin,SIGNAL(clicked()),this,SLOT(zoom_in()));
     ui->toolBar->addWidget(zoomin);
     toolbarbuttons.append(zoomin);
 
     //zoom out
-    QPushButton * zoomout = new QPushButton(QIcon("./icons/zoom-out.png"),"");
+    QPushButton * zoomout = new QPushButton(QIcon::fromTheme("zoom-out",QIcon("./icons/zoom-out.png")),"");
     connect(zoomout,SIGNAL(clicked()),this,SLOT(zoom_out()));
     ui->toolBar->addWidget(zoomout);
     toolbarbuttons.append(zoomout);
 
     //zoom original
-    QPushButton * zoomoriginal = new QPushButton(QIcon("./icons/zoom-original.png"),"");
+    QPushButton * zoomoriginal = new QPushButton(QIcon::fromTheme("zoom-original",QIcon("./icons/zoom-original.png")),"");
     connect(zoomoriginal,SIGNAL(clicked()),this,SLOT(zoom_original()));
     ui->toolBar->addWidget(zoomoriginal);
     toolbarbuttons.append(zoomoriginal);
 
     //zoom fit
-    QPushButton * zoomfit = new QPushButton(QIcon("./icons/zoom-best-fit.png"),"");
+    QPushButton * zoomfit = new QPushButton(QIcon::fromTheme("zoom-best-fit",QIcon("./icons/zoom-best-fit.png")),"");
     connect(zoomfit,SIGNAL(clicked()),this,SLOT(zoom_fit()));
     ui->toolBar->addWidget(zoomfit);
     toolbarbuttons.append(zoomfit);
@@ -201,37 +203,35 @@ void ViewWindow::initToolBar() {
     ui->toolBar->addSeparator();
 
     //rotate-right
-    QPushButton * rotateright = new QPushButton(QIcon("./icons/rotate-right.png"),"");
+    QPushButton * rotateright = new QPushButton(QIcon::fromTheme("rotate-right",QIcon("./icons/rotate-right.png")),"");
     connect(rotateright,SIGNAL(clicked()),this,SLOT(rotate_right()));
     ui->toolBar->addWidget(rotateright);
     toolbarbuttons.append(rotateright);
 
     //rotate-left
-    QPushButton * rotateleft = new QPushButton(QIcon("./icons/rotate-left.png"),"");
+    QPushButton * rotateleft = new QPushButton(QIcon::fromTheme("rotate-left",QIcon("./icons/rotate-left.png")),"");
     connect(rotateleft,SIGNAL(clicked()),this,SLOT(rotate_left()));
     ui->toolBar->addWidget(rotateleft);
     toolbarbuttons.append(rotateleft);
 
     //flip-horizontal
-    QPushButton * fliphorizontal = new QPushButton(QIcon("./icons/flip-horizontal.png"),"");
+    QPushButton * fliphorizontal = new QPushButton(QIcon::fromTheme("flip-horizontal",QIcon("./icons/flip-horizontal.png")),"");
     connect(fliphorizontal,SIGNAL(clicked()),this,SLOT(flip_horizontal()));
     ui->toolBar->addWidget(fliphorizontal);
     toolbarbuttons.append(fliphorizontal);
 
     //flip-vertical
-    QPushButton * flipvertical = new QPushButton(QIcon("./icons/flip-vertical.png"),"");
+    QPushButton * flipvertical = new QPushButton(QIcon::fromTheme("flip-vertical",QIcon("./icons/flip-vertical.png")),"");
     connect(flipvertical,SIGNAL(clicked()),this,SLOT(flip_vertical()));
     ui->toolBar->addWidget(flipvertical);
     toolbarbuttons.append(flipvertical);
 
-    ui->toolBar->addSeparator();
+    int size = settings->value("icon_size").toInt();
+    int toolbarbuttons_size = toolbarbuttons.size();
 
-    for (int i = 0; i < toolbarbuttons.size(); i++) {
+    for (int i = 0; i < toolbarbuttons_size; i++) {
 
         toolbarbuttons.at(i)->setFlat(true);
-
-        int size = settings->value("icon_size").toInt();
-
         toolbarbuttons.at(i)->setFixedSize(size+8,size+8);
         toolbarbuttons.at(i)->setIconSize(QSize(size,size));
     }
@@ -290,32 +290,26 @@ void ViewWindow::go_last() {
 
 void ViewWindow::zoom_in() {
 
-    if (scale < 10) {
-        scale += 1;
+    if (scale < 200) {
+        scale += 10;
     } else {
-        if (scale < 200) {
-            scale += 5;
-        } else {
-            scale += 25;
-        }
+        scale += 50;
     }
+
     ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
     update();
 }
 
 void ViewWindow::zoom_out() {
 
-    if (scale <= 10) {
-        if (scale > 1) {
-           scale -= 1;
-        }
-    } else {
+    if (scale > 10) {
         if (scale > 200) {
-            scale -= 25;
+            scale -= 50;
         } else {
-            scale -= 5;
+            scale -= 10;
         }
     }
+
     ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100),Qt::SmoothTransformation));
     update();
 }
@@ -331,7 +325,10 @@ void ViewWindow::zoom_fit() {
 
     scale = trunc(qMin((float(ui->scrollArea->geometry().width()) / float(image->width())),(float(ui->scrollArea->geometry().height()) / float(image->height()))) * 100);
 
+    if (scale > 100) scale = 100;
+
     ui->label->setPixmap(image->scaledToHeight(trunc(image->height() * (scale)/100 - 1),Qt::SmoothTransformation));
+
     update();
 }
 

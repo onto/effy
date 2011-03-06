@@ -106,8 +106,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>436</width>
-              <height>243</height>
+              <width>175</width>
+              <height>56</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
@@ -163,7 +163,7 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>418</width>
+              <width>420</width>
               <height>296</height>
              </rect>
             </property>
@@ -225,8 +225,8 @@ p, li { white-space: pre-wrap; }
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>436</width>
-              <height>243</height>
+              <width>380</width>
+              <height>180</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
